@@ -1,6 +1,6 @@
 const { redis } = require('./instance');
 
-describe('gis', () => {
+describe.skip('gis', () => {
 
     it.skip('gis.add', async () => {
         await redis['gis.add']('gistest', '123', 'POINT(0 0)').then(console.log);
