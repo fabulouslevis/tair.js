@@ -1,4 +1,4 @@
-import { Result, Callback } from 'ioredis';
+import { Args, Return } from './types';
 
 export const vectorCommands = [
     'tvs.createindex',

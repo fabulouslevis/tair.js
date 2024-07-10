@@ -1,4 +1,4 @@
-import { Result, Callback } from 'ioredis';
+import { Args, Return } from './types';
 
 export const stringCommands = [
     'exset',
@@ -13,125 +13,113 @@ export const stringCommands = [
     'exgae',
 ];
 
-export type ExSetArgs<T> = [
-    key: string | Buffer,
-    value: string | Buffer,
-    ...(
-        | [
-              ...(['EX' | 'PX' | 'EXAT' | 'PXAT', time: number] | []),
-              ...(['NX' | 'XX'] | []),
-              ...(['VER' | 'ABS', version: number] | []),
-          ]
-        | [...(['NX' | 'XX'] | []), ...(['VER' | 'ABS', version: number] | []), ...(['KEEPTTL'] | [])]
-    ),
-    ...([callback: Callback<T>] | []),
-];
+export type ExSetArgs<T> = Args<
+    [
+        key: string | Buffer,
+        value: string | Buffer,
+        ...(
+            | [
+                  ...(['EX' | 'PX' | 'EXAT' | 'PXAT', time: number] | []),
+                  ...(['NX' | 'XX'] | []),
+                  ...(['VER' | 'ABS', version: number] | []),
+              ]
+            | [...(['NX' | 'XX'] | []), ...(['VER' | 'ABS', version: number] | []), ...(['KEEPTTL'] | [])]
+        ),
+    ],
+    T
+>;
 
-export type ExGetArgs<T> = [key: string | Buffer, ...([callback: Callback<T>] | [])];
+export type ExGetArgs<T> = Args<[key: string | Buffer], T>;
 
-export type ExSetVerArgs<T> = [key: string | Buffer, version: number, ...([callback: Callback<T>] | [])];
+export type ExSetVerArgs<T> = Args<[key: string | Buffer, version: number], T>;
 
-export type ExIncrByArgs<T> = [
-    key: string | Buffer,
-    num: number,
-    ...(
-        | [
-              ...(['EX' | 'PX' | 'EXAT' | 'PXAT', time: number] | []),
-              ...(['NX' | 'XX'] | []),
-              ...(['VER' | 'ABS', version: number] | []),
-              ...(['MIN', minval: number] | []),
-              ...(['MAX', maxval: number] | []),
-          ]
-        | [
-              ...(['NX' | 'XX'] | []),
-              ...(['VER' | 'ABS', version: number] | []),
-              ...(['MIN', minval: number] | []),
-              ...(['MAX', maxval: number] | []),
-              ...(['KEEPTTL'] | []),
-          ]
-    ),
-    ...([callback: Callback<T>] | []),
-];
+export type ExIncrByArgs<T> = Args<
+    [
+        key: string | Buffer,
+        num: number,
+        ...(
+            | [
+                  ...(['EX' | 'PX' | 'EXAT' | 'PXAT', time: number] | []),
+                  ...(['NX' | 'XX'] | []),
+                  ...(['VER' | 'ABS', version: number] | []),
+                  ...(['MIN', minval: number] | []),
+                  ...(['MAX', maxval: number] | []),
+              ]
+            | [
+                  ...(['NX' | 'XX'] | []),
+                  ...(['VER' | 'ABS', version: number] | []),
+                  ...(['MIN', minval: number] | []),
+                  ...(['MAX', maxval: number] | []),
+                  ...(['KEEPTTL'] | []),
+              ]
+        ),
+    ],
+    T
+>;
 
-export type ExIncrByFloatArgs<T> = [
-    key: string | Buffer,
-    num: number,
-    ...(
-        | [
-              ...(['EX' | 'PX' | 'EXAT' | 'PXAT', time: number] | []),
-              ...(['NX' | 'XX'] | []),
-              ...(['VER' | 'ABS', version: number] | []),
-              ...(['MIN', minval: number] | []),
-              ...(['MAX', maxval: number] | []),
-          ]
-        | [
-              ...(['NX' | 'XX'] | []),
-              ...(['VER' | 'ABS', version: number] | []),
-              ...(['MIN', minval: number] | []),
-              ...(['MAX', maxval: number] | []),
-              ...(['KEEPTTL'] | []),
-          ]
-    ),
-    ...([callback: Callback<T>] | []),
-];
+export type ExIncrByFloatArgs<T> = Args<
+    [
+        key: string | Buffer,
+        num: number,
+        ...(
+            | [
+                  ...(['EX' | 'PX' | 'EXAT' | 'PXAT', time: number] | []),
+                  ...(['NX' | 'XX'] | []),
+                  ...(['VER' | 'ABS', version: number] | []),
+                  ...(['MIN', minval: number] | []),
+                  ...(['MAX', maxval: number] | []),
+              ]
+            | [
+                  ...(['NX' | 'XX'] | []),
+                  ...(['VER' | 'ABS', version: number] | []),
+                  ...(['MIN', minval: number] | []),
+                  ...(['MAX', maxval: number] | []),
+                  ...(['KEEPTTL'] | []),
+              ]
+        ),
+    ],
+    T
+>;
 
-export type ExCasArgs<T> = [
-    key: string | Buffer,
-    newvalue: string | Buffer,
-    version: number,
-    ...([callback: Callback<T>] | []),
-];
+export type ExCasArgs<T> = Args<[key: string | Buffer, newvalue: string | Buffer, version: number], T>;
 
-export type ExCadArgs<T> = [key: string | Buffer, version: number, ...([callback: Callback<T>] | [])];
+export type ExCadArgs<T> = Args<[key: string | Buffer, version: number], T>;
 
-export type ExAppendArgs<T> = [
-    key: string | Buffer,
-    value: string | Buffer,
-    'NX' | 'XX',
-    'VER' | 'ABS',
-    version: number,
-    ...([callback: Callback<T>] | []),
-];
+export type ExAppendArgs<T> = Args<
+    [key: string | Buffer, value: string | Buffer, 'NX' | 'XX', 'VER' | 'ABS', version: number],
+    T
+>;
 
-export type ExPrependArgs<T> = [
-    key: string | Buffer,
-    value: string | Buffer,
-    'NX' | 'XX',
-    'VER' | 'ABS',
-    version: number,
-    ...([callback: Callback<T>] | []),
-];
+export type ExPrependArgs<T> = Args<
+    [key: string | Buffer, value: string | Buffer, 'NX' | 'XX', 'VER' | 'ABS', version: number],
+    T
+>;
 
-export type ExGaeArgs<T> = [
-    key: string | Buffer,
-    'EX' | 'PX' | 'EXAT' | 'PXAT',
-    time: number,
-    ...([callback: Callback<T>] | []),
-];
+export type ExGaeArgs<T> = Args<[key: string | Buffer, 'EX' | 'PX' | 'EXAT' | 'PXAT', time: number], T>;
 
 declare module 'ioredis' {
     interface RedisCommander<Context> {
-        exset(...args: ExSetArgs<'OK'>): Result<'OK', Context>;
+        exset(...args: ExSetArgs<'OK'>): Return<'OK', Context>;
 
-        exget(...args: ExGetArgs<[string, number]>): Result<[string, number], Context>;
-        exgetBuffer(...args: ExGetArgs<[Buffer, number]>): Result<[Buffer, number], Context>;
+        exget(...args: ExGetArgs<[string, number]>): Return<[string, number], Context>;
+        exgetBuffer(...args: ExGetArgs<[Buffer, number]>): Return<[Buffer, number], Context>;
 
-        exsetver(...args: ExSetVerArgs<number>): Result<number, Context>;
+        exsetver(...args: ExSetVerArgs<number>): Return<number, Context>;
 
-        exincrby(...args: ExIncrByArgs<number>): Result<number, Context>;
+        exincrby(...args: ExIncrByArgs<number>): Return<number, Context>;
 
-        exincrbyfloat(...args: ExIncrByFloatArgs<string>): Result<string, Context>;
+        exincrbyfloat(...args: ExIncrByFloatArgs<string>): Return<string, Context>;
 
-        excas(...args: ExCasArgs<['OK', string, number]>): Result<['OK', string, number], Context>;
-        excasBuffer(...args: ExCasArgs<[Buffer, Buffer, number]>): Result<[Buffer, Buffer, number], Context>;
+        excas(...args: ExCasArgs<['OK', string, number]>): Return<['OK', string, number], Context>;
+        excasBuffer(...args: ExCasArgs<[Buffer, Buffer, number]>): Return<[Buffer, Buffer, number], Context>;
 
-        excad(...args: ExCadArgs<number>): Result<number, Context>;
+        excad(...args: ExCadArgs<number>): Return<number, Context>;
 
-        exappend(...args: ExAppendArgs<number>): Result<number, Context>;
+        exappend(...args: ExAppendArgs<number>): Return<number, Context>;
 
-        exprepend(...args: ExPrependArgs<number>): Result<number, Context>;
+        exprepend(...args: ExPrependArgs<number>): Return<number, Context>;
 
-        exgae(...args: ExGaeArgs<[string, number, number]>): Result<[string, number, number], Context>;
-        exgaeBuffer(...args: ExGaeArgs<[Buffer, number, number]>): Result<[Buffer, number, number], Context>;
+        exgae(...args: ExGaeArgs<[string, number, number]>): Return<[string, number, number], Context>;
+        exgaeBuffer(...args: ExGaeArgs<[Buffer, number, number]>): Return<[Buffer, number, number], Context>;
     }
 }
