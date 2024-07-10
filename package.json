@@ -1,0 +1,31 @@
+{
+  "name": "tairjs",
+  "version": "1.0.0",
+  "description": "Tair Nodejs Sdk",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "npm run build && ./node_modules/.bin/mocha",
+    "build": "rm -rf built && tsc"
+  },
+  "author": "Tony Tong",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fabulouslevis/tairjs.git"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "ioredis": "^5.4.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.9",
+    "@typescript-eslint/eslint-plugin": "^7.15.0",
+    "@typescript-eslint/parser": "^7.15.0",
+    "dotenv": "^16.4.5",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "mocha": "^10.6.0",
+    "prettier": "^3.3.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.3"
+  }
+}
