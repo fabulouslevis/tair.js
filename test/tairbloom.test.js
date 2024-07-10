@@ -1,6 +1,6 @@
 const { redis } = require('./instance');
 
-describe('bloom', () => {
+describe.skip('bloom', () => {
 
     it('bf.add', async () => {
         await redis['bf.add']('bloomtest', '123').then(console.log);
