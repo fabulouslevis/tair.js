@@ -1,14 +1,10 @@
-import { Command, Context, Format } from './types';
+import { Command, Context, Format, Optional, TrimStart, CAPACITY, ERROR, NOCREATE, ITEMS } from './types';
 
 export const bloomCommands = ['bf.add', 'bf.madd', 'bf.exists', 'bf.mexists', 'bf.insert', 'bf.reserve', 'bf.info'];
 
 export type BfAdd<TContext extends Context> = Command<[key: string | Buffer, item: string | Buffer], number, TContext>;
 
-export type BfMAdd<TContext extends Context> = Command<
-    [key: string | Buffer, item: string | Buffer, ...items: (string | Buffer)[]],
-    number[],
-    TContext
->;
+export type BfMAdd<TContext extends Context> = Command<[key: string | Buffer, ...TrimStart<ITEMS>], number[], TContext>;
 
 export type BfExists<TContext extends Context> = Command<
     [key: string | Buffer, item: string | Buffer],
@@ -17,19 +13,13 @@ export type BfExists<TContext extends Context> = Command<
 >;
 
 export type BfMExists<TContext extends Context> = Command<
-    [key: string | Buffer, item: string | Buffer, ...items: (string | Buffer)[]],
+    [key: string | Buffer, ...TrimStart<ITEMS>],
     number[],
     TContext
 >;
 
 export type BfInsert<TContext extends Context> = Command<
-    [
-        key: string | Buffer,
-        ...([...(['CAPACITY', capacity: number] | []), ...(['ERROR', errorRate: number] | [])] | ['NOCREATE'] | []),
-        'ITEMS',
-        item: string | Buffer,
-        ...items: (string | Buffer)[],
-    ],
+    [key: string | Buffer, ...([...Optional<CAPACITY>, ...Optional<ERROR>] | NOCREATE), ...ITEMS],
     number[],
     TContext
 >;

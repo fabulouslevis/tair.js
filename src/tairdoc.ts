@@ -1,4 +1,4 @@
-import { Command, Context, Format } from './types';
+import { Command, Context, Format, Optional, FORMAT, ROOTNAME, ARRNAME, WRITE } from './types';
 
 export const docCommands = [
     'json.del',
@@ -17,7 +17,7 @@ export const docCommands = [
 ];
 
 export type JsonDel<TContext extends Context> = Command<
-    [key: string | Buffer, ...([path: string | Buffer] | [])],
+    [key: string | Buffer, ...Optional<[path: string | Buffer]>],
     number,
     TContext
 >;
@@ -25,15 +25,7 @@ export type JsonDel<TContext extends Context> = Command<
 export type JsonGet<TContext extends Context, TFormat extends Format = 'default'> = Command<
     [
         key: string | Buffer,
-        ...(
-            | [
-                  path: string | Buffer,
-                  ...(['FORMAT', 'XML' | 'YAML'] | []),
-                  ...(['ROOTNAME', root: string] | []),
-                  ...(['ARRNAME', arr: string] | []),
-              ]
-            | []
-        ),
+        ...Optional<[path: string | Buffer, ...Optional<FORMAT>, ...Optional<ROOTNAME>, ...Optional<ARRNAME>]>,
     ],
     TFormat extends 'buffer' ? Buffer : string,
     TContext
@@ -46,31 +38,31 @@ export type JsonMGet<TContext extends Context, TFormat extends Format = 'default
 >;
 
 export type JsonSet<TContext extends Context> = Command<
-    [key: string | Buffer, path: string | Buffer, json: string | Buffer, ...(['NX' | 'XX'] | [])],
+    [key: string | Buffer, path: string | Buffer, json: string | Buffer, ...Optional<WRITE>],
     'OK',
     TContext
 >;
 
 export type JsonType<TContext extends Context, TFormat extends Format = 'default'> = Command<
-    [key: string | Buffer, ...([path: string | Buffer] | [])],
+    [key: string | Buffer, ...Optional<[path: string | Buffer]>],
     TFormat extends 'buffer' ? Buffer : string,
     TContext
 >;
 
 export type JsonNumIncrBy<TContext extends Context> = Command<
-    [key: string | Buffer, ...([path: string | Buffer] | []), value: number],
+    [key: string | Buffer, ...Optional<[path: string | Buffer]>, value: number],
     string,
     TContext
 >;
 
 export type JsonStrAppend<TContext extends Context> = Command<
-    [key: string | Buffer, ...([path: string | Buffer] | []), json: string | Buffer],
+    [key: string | Buffer, ...Optional<[path: string | Buffer]>, json: string | Buffer],
     number,
     TContext
 >;
 
 export type JsonStrLen<TContext extends Context> = Command<
-    [key: string | Buffer, ...([path: string | Buffer] | [])],
+    [key: string | Buffer, ...Optional<[path: string | Buffer]>],
     number,
     TContext
 >;
@@ -82,7 +74,7 @@ export type JsonArrAppend<TContext extends Context> = Command<
 >;
 
 export type JsonArrPop<TContext extends Context> = Command<
-    [key: string | Buffer, path: string | Buffer, ...([index: number] | [])],
+    [key: string | Buffer, path: string | Buffer, ...Optional<[index: number]>],
     number,
     TContext
 >;
@@ -94,7 +86,7 @@ export type JsonArrInsert<TContext extends Context> = Command<
 >;
 
 export type JsonArrLen<TContext extends Context> = Command<
-    [key: string | Buffer, ...([path: string | Buffer] | [])],
+    [key: string | Buffer, ...Optional<[path: string | Buffer]>],
     number,
     TContext
 >;

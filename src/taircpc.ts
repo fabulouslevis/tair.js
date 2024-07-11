@@ -1,4 +1,4 @@
-import { Command, Context, Format } from './types';
+import { Command, Context, Format, Optional, EXPIRE, SIZE, WIN } from './types';
 
 export const cpcCommands = [
     'cpc.estimate',
@@ -16,19 +16,19 @@ export const cpcCommands = [
 export type CpcEstimate<TContext extends Context> = Command<[key: string | Buffer], string, TContext>;
 
 export type CpcUpdate<TContext extends Context> = Command<
-    [key: string | Buffer, item: string | Buffer, ...(['EX' | 'EXAT' | 'PX' | 'PXAT', time: number] | [])],
+    [key: string | Buffer, item: string | Buffer, ...Optional<EXPIRE>],
     'OK',
     TContext
 >;
 
 export type CpcUpdate2Est<TContext extends Context> = Command<
-    [key: string | Buffer, item: string | Buffer, ...(['EX' | 'EXAT' | 'PX' | 'PXAT', time: number] | [])],
+    [key: string | Buffer, item: string | Buffer, ...Optional<EXPIRE>],
     string,
     TContext
 >;
 
 export type CpcUpdate2Jud<TContext extends Context> = Command<
-    [key: string | Buffer, item: string | Buffer, ...(['EX' | 'EXAT' | 'PX' | 'PXAT', time: number] | [])],
+    [key: string | Buffer, item: string | Buffer, ...Optional<EXPIRE>],
     [string, string],
     TContext
 >;
@@ -44,9 +44,9 @@ export type CpcArrayUpdate<TContext extends Context> = Command<
         key: string | Buffer,
         timestamp: number,
         item: string | Buffer,
-        ...(['EX' | 'EXAT' | 'PX' | 'PXAT', time: number] | []),
-        ...(['SIZE', size: number] | []),
-        ...(['WIN', win: number] | []),
+        ...Optional<EXPIRE>,
+        ...Optional<SIZE>,
+        ...Optional<WIN>,
     ],
     'OK',
     TContext
@@ -57,9 +57,9 @@ export type CpcArrayUpdate2Est<TContext extends Context> = Command<
         key: string | Buffer,
         timestamp: number,
         item: string | Buffer,
-        ...(['EX' | 'EXAT' | 'PX' | 'PXAT', time: number] | []),
-        ...(['SIZE', size: number] | []),
-        ...(['WIN', win: number] | []),
+        ...Optional<EXPIRE>,
+        ...Optional<SIZE>,
+        ...Optional<WIN>,
     ],
     string,
     TContext
@@ -70,9 +70,9 @@ export type CpcArrayUpdate2Jud<TContext extends Context> = Command<
         key: string | Buffer,
         timestamp: number,
         item: string | Buffer,
-        ...(['EX' | 'EXAT' | 'PX' | 'PXAT', time: number] | []),
-        ...(['SIZE', size: number] | []),
-        ...(['WIN', win: number] | []),
+        ...Optional<EXPIRE>,
+        ...Optional<SIZE>,
+        ...Optional<WIN>,
     ],
     [string, string],
     TContext
