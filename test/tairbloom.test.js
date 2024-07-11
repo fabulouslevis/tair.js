@@ -35,10 +35,4 @@ describe.skip('bloom', () => {
         await redis['bf.info']('bloomtest3').then(console.log);
     });
 
-    it('bf.debug', async () => {
-        await redis['bf.debug']('bloomtest1').then(console.log);
-        await redis['bf.debugBuffer']('bloomtest2').then(console.log);
-        await redis['bf.debug']('bloomtest3').then(console.log);
-    });
-
 });

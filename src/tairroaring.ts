@@ -1,4 +1,4 @@
-import { Args, Return } from './types';
+import { Command, Context, Format } from './types';
 
 export const roaringCommands = [
     'tr.setbit',

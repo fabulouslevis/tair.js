@@ -1,4 +1,4 @@
-import { Args, Return } from './types';
+import { Command, Context, Format } from './types';
 
 export const docCommands = [
     'json.del',
@@ -16,9 +16,13 @@ export const docCommands = [
     'json.arrtrim',
 ];
 
-export type JsonDelArgs<T> = Args<[key: string | Buffer, ...([path: string | Buffer] | [])], T>;
+export type JsonDel<TContext extends Context> = Command<
+    [key: string | Buffer, ...([path: string | Buffer] | [])],
+    number,
+    TContext
+>;
 
-export type JsonGetArgs<T> = Args<
+export type JsonGet<TContext extends Context, TFormat extends Format = 'default'> = Command<
     [
         key: string | Buffer,
         ...(
@@ -31,73 +35,105 @@ export type JsonGetArgs<T> = Args<
             | []
         ),
     ],
-    T
+    TFormat extends 'buffer' ? Buffer : string,
+    TContext
 >;
 
-export type JsonMGetArgs<T> = Args<[key: string | Buffer, ...keys: (string | Buffer)[], path: string | Buffer], T>;
+export type JsonMGet<TContext extends Context, TFormat extends Format = 'default'> = Command<
+    [key: string | Buffer, ...keys: (string | Buffer)[], path: string | Buffer],
+    TFormat extends 'buffer' ? Buffer[] : string[],
+    TContext
+>;
 
-export type JsonSetArgs<T> = Args<
+export type JsonSet<TContext extends Context> = Command<
     [key: string | Buffer, path: string | Buffer, json: string | Buffer, ...(['NX' | 'XX'] | [])],
-    T
+    'OK',
+    TContext
 >;
 
-export type JsonTypeArgs<T> = Args<[key: string | Buffer, ...([path: string | Buffer] | [])], T>;
+export type JsonType<TContext extends Context, TFormat extends Format = 'default'> = Command<
+    [key: string | Buffer, ...([path: string | Buffer] | [])],
+    TFormat extends 'buffer' ? Buffer : string,
+    TContext
+>;
 
-export type JsonNumIncrbyArgs<T> = Args<[key: string | Buffer, ...([path: string | Buffer] | []), value: number], T>;
+export type JsonNumIncrBy<TContext extends Context> = Command<
+    [key: string | Buffer, ...([path: string | Buffer] | []), value: number],
+    string,
+    TContext
+>;
 
-export type JsonStrAppendArgs<T> = Args<
+export type JsonStrAppend<TContext extends Context> = Command<
     [key: string | Buffer, ...([path: string | Buffer] | []), json: string | Buffer],
-    T
+    number,
+    TContext
 >;
 
-export type JsonStrLenArgs<T> = Args<[key: string | Buffer, ...([path: string | Buffer] | [])], T>;
+export type JsonStrLen<TContext extends Context> = Command<
+    [key: string | Buffer, ...([path: string | Buffer] | [])],
+    number,
+    TContext
+>;
 
-export type JsonArrAppendArgs<T> = Args<
+export type JsonArrAppend<TContext extends Context> = Command<
     [key: string | Buffer, path: string | Buffer, json: string | Buffer, ...jsons: (string | Buffer)[]],
-    T
+    number,
+    TContext
 >;
 
-export type JsonArrPopArgs<T> = Args<[key: string | Buffer, path: string | Buffer, ...([index: number] | [])], T>;
+export type JsonArrPop<TContext extends Context> = Command<
+    [key: string | Buffer, path: string | Buffer, ...([index: number] | [])],
+    number,
+    TContext
+>;
 
-export type JsonArrInsertArgs<T> = Args<
+export type JsonArrInsert<TContext extends Context> = Command<
     [key: string | Buffer, path: string | Buffer, index: number, json: string | Buffer, ...jsons: (string | Buffer)[]],
-    T
+    number,
+    TContext
 >;
 
-export type JsonArrLenArgs<T> = Args<[key: string | Buffer, ...([path: string | Buffer] | [])], T>;
+export type JsonArrLen<TContext extends Context> = Command<
+    [key: string | Buffer, ...([path: string | Buffer] | [])],
+    number,
+    TContext
+>;
 
-export type JsonArrTrimArgs<T> = Args<[key: string | Buffer, path: string | Buffer, start: number, stop: number], T>;
+export type JsonArrTrim<TContext extends Context> = Command<
+    [key: string | Buffer, path: string | Buffer, start: number, stop: number],
+    number,
+    TContext
+>;
 
 declare module 'ioredis' {
     interface RedisCommander<Context> {
-        ['json.del'](...args: JsonDelArgs<number>): Return<number, Context>;
+        ['json.del']: JsonDel<Context>;
 
-        ['json.get'](...args: JsonGetArgs<string>): Return<string, Context>;
-        ['json.getBuffer'](...args: JsonGetArgs<Buffer>): Return<Buffer, Context>;
+        ['json.get']: JsonGet<Context>;
+        ['json.getBuffer']: JsonGet<Context, 'buffer'>;
 
-        ['json.mget'](...args: JsonMGetArgs<string[]>): Return<string[], Context>;
-        ['json.mgetBuffer'](...args: JsonMGetArgs<Buffer[]>): Return<Buffer[], Context>;
+        ['json.mget']: JsonMGet<Context>;
+        ['json.mgetBuffer']: JsonMGet<Context, 'buffer'>;
 
-        ['json.set'](...args: JsonSetArgs<'OK'>): Return<'OK', Context>;
+        ['json.set']: JsonSet<Context>;
 
-        ['json.type'](...args: JsonTypeArgs<string>): Return<string, Context>;
-        ['json.typeBuffer'](...args: JsonTypeArgs<Buffer>): Return<Buffer, Context>;
+        ['json.type']: JsonType<Context>;
+        ['json.typeBuffer']: JsonType<Context, 'buffer'>;
 
-        ['json.numincrby'](...args: JsonNumIncrbyArgs<string>): Return<string, Context>;
-        ['json.numincrbyBuffer'](...args: JsonNumIncrbyArgs<Buffer>): Return<Buffer, Context>;
+        ['json.numincrby']: JsonNumIncrBy<Context>;
 
-        ['json.strappend'](...args: JsonStrAppendArgs<number>): Return<number, Context>;
+        ['json.strappend']: JsonStrAppend<Context>;
 
-        ['json.strlen'](...args: JsonStrLenArgs<number>): Return<number, Context>;
+        ['json.strlen']: JsonStrLen<Context>;
 
-        ['json.arrappend'](...args: JsonArrAppendArgs<number>): Return<number, Context>;
+        ['json.arrappend']: JsonArrAppend<Context>;
 
-        ['json.arrpop'](...args: JsonArrPopArgs<number>): Return<number, Context>;
+        ['json.arrpop']: JsonArrPop<Context>;
 
-        ['json.arrinsert'](...args: JsonArrInsertArgs<number>): Return<number, Context>;
+        ['json.arrinsert']: JsonArrInsert<Context>;
 
-        ['json.arrlen'](...args: JsonArrLenArgs<number>): Return<number, Context>;
+        ['json.arrlen']: JsonArrLen<Context>;
 
-        ['json.arrtrim'](...args: JsonArrTrimArgs<number>): Return<number, Context>;
+        ['json.arrtrim']: JsonArrTrim<Context>;
     }
 }

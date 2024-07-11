@@ -1,25 +1,28 @@
-import { Args, Return } from './types';
+import { Command, Context, Format } from './types';
 
-export const bloomCommands = [
-    'bf.add',
-    'bf.madd',
-    'bf.exists',
-    'bf.mexists',
-    'bf.insert',
-    'bf.reserve',
-    'bf.info',
-    'bf.debug',
-];
+export const bloomCommands = ['bf.add', 'bf.madd', 'bf.exists', 'bf.mexists', 'bf.insert', 'bf.reserve', 'bf.info'];
 
-export type BfAddArgs<T> = Args<[key: string | Buffer, item: string | Buffer], T>;
+export type BfAdd<TContext extends Context> = Command<[key: string | Buffer, item: string | Buffer], number, TContext>;
 
-export type BfMAddArgs<T> = Args<[key: string | Buffer, item: string | Buffer, ...items: (string | Buffer)[]], T>;
+export type BfMAdd<TContext extends Context> = Command<
+    [key: string | Buffer, item: string | Buffer, ...items: (string | Buffer)[]],
+    number[],
+    TContext
+>;
 
-export type BfExistsArgs<T> = Args<[key: string | Buffer, item: string | Buffer], T>;
+export type BfExists<TContext extends Context> = Command<
+    [key: string | Buffer, item: string | Buffer],
+    number,
+    TContext
+>;
 
-export type BfMExistsArgs<T> = Args<[key: string | Buffer, item: string | Buffer, ...items: (string | Buffer)[]], T>;
+export type BfMExists<TContext extends Context> = Command<
+    [key: string | Buffer, item: string | Buffer, ...items: (string | Buffer)[]],
+    number[],
+    TContext
+>;
 
-export type BfInsertArgs<T> = Args<
+export type BfInsert<TContext extends Context> = Command<
     [
         key: string | Buffer,
         ...([...(['CAPACITY', capacity: number] | []), ...(['ERROR', errorRate: number] | [])] | ['NOCREATE'] | []),
@@ -27,32 +30,37 @@ export type BfInsertArgs<T> = Args<
         item: string | Buffer,
         ...items: (string | Buffer)[],
     ],
-    T
+    number[],
+    TContext
 >;
 
-export type BfReserveArgs<T> = Args<[key: string | Buffer, errorRate: number, capacity: number], T>;
+export type BfReserve<TContext extends Context> = Command<
+    [key: string | Buffer, errorRate: number, capacity: number],
+    'OK',
+    TContext
+>;
 
-export type BfInfoArgs<T> = Args<[key: string | Buffer], T>;
+export type BfInfo<TContext extends Context, TFormat extends Format = 'default'> = Command<
+    [key: string | Buffer],
+    TFormat extends 'buffer' ? Buffer[] : string[],
+    TContext
+>;
 
-export type BfDebugArgs<T> = Args<[key: string | Buffer], T>;
 declare module 'ioredis' {
     interface RedisCommander<Context> {
-        ['bf.add'](...args: BfAddArgs<number>): Return<number, Context>;
+        ['bf.add']: BfAdd<Context>;
 
-        ['bf.madd'](...args: BfMAddArgs<number[]>): Return<number[], Context>;
+        ['bf.madd']: BfMAdd<Context>;
 
-        ['bf.exists'](...args: BfExistsArgs<number>): Return<number, Context>;
+        ['bf.exists']: BfExists<Context>;
 
-        ['bf.mexists'](...args: BfMExistsArgs<number[]>): Return<number[], Context>;
+        ['bf.mexists']: BfMExists<Context>;
 
-        ['bf.insert'](...args: BfInsertArgs<number[]>): Return<number[], Context>;
+        ['bf.insert']: BfInsert<Context>;
 
-        ['bf.reserve'](...args: BfReserveArgs<'OK'>): Return<'OK', Context>;
+        ['bf.reserve']: BfReserve<Context>;
 
-        ['bf.info'](...args: BfInfoArgs<string[]>): Return<string[], Context>;
-        ['bf.infoBuffer'](...args: BfInfoArgs<Buffer[]>): Return<Buffer[], Context>;
-
-        ['bf.debug'](...args: BfDebugArgs<string[]>): Return<string[], Context>;
-        ['bf.debugBuffer'](...args: BfDebugArgs<Buffer[]>): Return<Buffer[], Context>;
+        ['bf.info']: BfInfo<Context>;
+        ['bf.infoBuffer']: BfInfo<Context, 'buffer'>;
     }
 }

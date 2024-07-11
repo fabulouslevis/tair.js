@@ -1,5 +1,9 @@
 import { ClientContext, Result, Callback } from 'ioredis';
 
-export type Args<TArgs extends any[], TResult> = [...TArgs, ...([callback: Callback<TResult>] | [])];
+export type Format = 'default' | 'buffer';
 
-export type Return<TResult, TContext extends ClientContext> = Result<TResult, TContext>;
+export type Context = ClientContext;
+
+export type Command<TArgs extends any[], TReturn, TContext extends Context> = (
+    ...args: [...TArgs, ...([callback: Callback<TReturn>] | [])]
+) => Result<TReturn, TContext>;

@@ -1,4 +1,4 @@
-import { Args, Return } from './types';
+import { Command, Context, Format } from './types';
 
 export const gisCommands = [
     'gis.add',
@@ -11,16 +11,25 @@ export const gisCommands = [
     'gis.getall',
 ];
 
-export type GisAddArgs<T> = Args<
+export type GisAdd<TContext extends Context> = Command<
     [key: string | Buffer, polygonName: string | Buffer, polygonWktText: string | Buffer],
-    T
+    number,
+    TContext
 >;
 
-export type GisGetArgs<T> = Args<[key: string | Buffer, polygonName: string | Buffer], T>;
+export type GisGet<TContext extends Context, TFormat extends Format = 'default'> = Command<
+    [key: string | Buffer, polygonName: string | Buffer],
+    TFormat extends 'buffer' ? Buffer : string,
+    TContext
+>;
 
-export type GisDelArgs<T> = Args<[key: string | Buffer, polygonName: string | Buffer], T>;
+export type GisDel<TContext extends Context> = Command<
+    [key: string | Buffer, polygonName: string | Buffer],
+    'OK',
+    TContext
+>;
 
-export type GisSearchArgs<T> = Args<
+export type GisSearch<TContext extends Context, TFormat extends Format = 'default'> = Command<
     [
         key: string | Buffer,
         ...(
@@ -33,42 +42,56 @@ export type GisSearchArgs<T> = Args<
         ...(['WITHDIST'] | []),
         ...(['WITHOUTWKT'] | []),
     ],
-    T
+    TFormat extends 'buffer' ? [number, Buffer[]] : [number, string[]],
+    TContext
 >;
 
-export type GisContainsArgs<T> = Args<[key: string | Buffer, polygonWkt: string | Buffer, ...(['WITHOUTWKT'] | [])], T>;
-
-export type GisWithinArgs<T> = Args<[key: string | Buffer, polygonWkt: string | Buffer, ...(['WITHOUTWKT'] | [])], T>;
-
-export type GisIntersectsArgs<T> = Args<
+export type GisContains<TContext extends Context, TFormat extends Format = 'default'> = Command<
     [key: string | Buffer, polygonWkt: string | Buffer, ...(['WITHOUTWKT'] | [])],
-    T
+    TFormat extends 'buffer' ? [number, Buffer[]] : [number, string[]],
+    TContext
 >;
 
-export type GisGetAllArgs<T> = Args<[key: string | Buffer, ...(['WITHOUTWKT'] | [])], T>;
+export type GisWithin<TContext extends Context, TFormat extends Format = 'default'> = Command<
+    [key: string | Buffer, polygonWkt: string | Buffer, ...(['WITHOUTWKT'] | [])],
+    TFormat extends 'buffer' ? [number, Buffer[]] : [number, string[]],
+    TContext
+>;
+
+export type GisIntersects<TContext extends Context, TFormat extends Format = 'default'> = Command<
+    [key: string | Buffer, polygonWkt: string | Buffer, ...(['WITHOUTWKT'] | [])],
+    TFormat extends 'buffer' ? [number, Buffer[]] : [number, string[]],
+    TContext
+>;
+
+export type GisGetAll<TContext extends Context, TFormat extends Format = 'default'> = Command<
+    [key: string | Buffer, ...(['WITHOUTWKT'] | [])],
+    TFormat extends 'buffer' ? Buffer[] : string[],
+    TContext
+>;
 
 declare module 'ioredis' {
     interface RedisCommander<Context> {
-        ['gis.add'](...args: GisAddArgs<number>): Return<number, Context>;
+        ['gis.add']: GisAdd<Context>;
 
-        ['gis.get'](...args: GisGetArgs<string>): Return<string, Context>;
-        ['gis.getBuffer'](...args: GisGetArgs<Buffer>): Return<Buffer, Context>;
+        ['gis.get']: GisGet<Context>;
+        ['gis.getBuffer']: GisGet<Context, 'buffer'>;
 
-        ['gis.del'](...args: GisDelArgs<'OK'>): Return<'OK', Context>;
+        ['gis.del']: GisDel<Context>;
 
-        ['gis.search'](...args: GisSearchArgs<[number, string[]]>): Return<[number, string[]], Context>;
-        ['gis.searchBuffer'](...args: GisSearchArgs<[number, Buffer[]]>): Return<[number, Buffer[]], Context>;
+        ['gis.search']: GisSearch<Context>;
+        ['gis.searchBuffer']: GisSearch<Context, 'buffer'>;
 
-        ['gis.contains'](...args: GisContainsArgs<[number, string[]]>): Return<[number, string[]], Context>;
-        ['gis.containsBuffer'](...args: GisContainsArgs<[number, Buffer[]]>): Return<[number, Buffer[]], Context>;
+        ['gis.contains']: GisContains<Context>;
+        ['gis.containsBuffer']: GisContains<Context, 'buffer'>;
 
-        ['gis.within'](...args: GisContainsArgs<[number, string[]]>): Return<[number, string[]], Context>;
-        ['gis.withinBuffer'](...args: GisContainsArgs<[number, Buffer[]]>): Return<[number, Buffer[]], Context>;
+        ['gis.within']: GisWithin<Context>;
+        ['gis.withinBuffer']: GisWithin<Context, 'buffer'>;
 
-        ['gis.intersects'](...args: GisIntersectsArgs<[number, string[]]>): Return<[number, string[]], Context>;
-        ['gis.intersectsBuffer'](...args: GisIntersectsArgs<[number, Buffer[]]>): Return<[number, Buffer[]], Context>;
+        ['gis.intersects']: GisIntersects<Context>;
+        ['gis.intersectsBuffer']: GisIntersects<Context, 'buffer'>;
 
-        ['gis.getall'](...args: GisGetAllArgs<string[]>): Return<string[], Context>;
-        ['gis.getallBuffer'](...args: GisGetAllArgs<Buffer[]>): Return<Buffer[], Context>;
+        ['gis.getall']: GisGetAll<Context>;
+        ['gis.getallBuffer']: GisGetAll<Context, 'buffer'>;
     }
 }

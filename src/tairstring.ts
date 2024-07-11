@@ -1,4 +1,4 @@
-import { Args, Return } from './types';
+import { Command, Context, Format } from './types';
 
 export const stringCommands = [
     'exset',
@@ -13,7 +13,7 @@ export const stringCommands = [
     'exgae',
 ];
 
-export type ExSetArgs<T> = Args<
+export type ExSet<TContext extends Context> = Command<
     [
         key: string | Buffer,
         value: string | Buffer,
@@ -26,14 +26,19 @@ export type ExSetArgs<T> = Args<
             | [...(['NX' | 'XX'] | []), ...(['VER' | 'ABS', version: number] | []), ...(['KEEPTTL'] | [])]
         ),
     ],
-    T
+    'OK',
+    TContext
 >;
 
-export type ExGetArgs<T> = Args<[key: string | Buffer], T>;
+export type ExGet<TContext extends Context, TFormat extends Format = 'default'> = Command<
+    [key: string | Buffer],
+    TFormat extends 'buffer' ? [Buffer, number] : [string, number],
+    TContext
+>;
 
-export type ExSetVerArgs<T> = Args<[key: string | Buffer, version: number], T>;
+export type ExSetVer<TContext extends Context> = Command<[key: string | Buffer, version: number], number, TContext>;
 
-export type ExIncrByArgs<T> = Args<
+export type ExIncrBy<TContext extends Context> = Command<
     [
         key: string | Buffer,
         num: number,
@@ -54,10 +59,11 @@ export type ExIncrByArgs<T> = Args<
               ]
         ),
     ],
-    T
+    number,
+    TContext
 >;
 
-export type ExIncrByFloatArgs<T> = Args<
+export type ExIncrByFloat<TContext extends Context> = Command<
     [
         key: string | Buffer,
         num: number,
@@ -78,48 +84,59 @@ export type ExIncrByFloatArgs<T> = Args<
               ]
         ),
     ],
-    T
+    string,
+    TContext
 >;
 
-export type ExCasArgs<T> = Args<[key: string | Buffer, newvalue: string | Buffer, version: number], T>;
+export type ExCas<TContext extends Context, TFormat extends Format = 'default'> = Command<
+    [key: string | Buffer, newvalue: string | Buffer, version: number],
+    TFormat extends 'buffer' ? [Buffer, Buffer, number] : ['OK', string, number],
+    TContext
+>;
 
-export type ExCadArgs<T> = Args<[key: string | Buffer, version: number], T>;
+export type ExCad<TContext extends Context> = Command<[key: string | Buffer, version: number], number, TContext>;
 
-export type ExAppendArgs<T> = Args<
+export type ExAppend<TContext extends Context> = Command<
     [key: string | Buffer, value: string | Buffer, 'NX' | 'XX', 'VER' | 'ABS', version: number],
-    T
+    number,
+    TContext
 >;
 
-export type ExPrependArgs<T> = Args<
+export type ExPrepend<TContext extends Context> = Command<
     [key: string | Buffer, value: string | Buffer, 'NX' | 'XX', 'VER' | 'ABS', version: number],
-    T
+    number,
+    TContext
 >;
 
-export type ExGaeArgs<T> = Args<[key: string | Buffer, 'EX' | 'PX' | 'EXAT' | 'PXAT', time: number], T>;
+export type ExGae<TContext extends Context, TFormat extends Format = 'default'> = Command<
+    [key: string | Buffer, 'EX' | 'PX' | 'EXAT' | 'PXAT', time: number],
+    TFormat extends 'buffer' ? [Buffer, number, number] : [string, number, number],
+    TContext
+>;
 
 declare module 'ioredis' {
     interface RedisCommander<Context> {
-        exset(...args: ExSetArgs<'OK'>): Return<'OK', Context>;
+        exset: ExSet<Context>;
 
-        exget(...args: ExGetArgs<[string, number]>): Return<[string, number], Context>;
-        exgetBuffer(...args: ExGetArgs<[Buffer, number]>): Return<[Buffer, number], Context>;
+        exget: ExGet<Context>;
+        exgetBuffer: ExGet<Context, 'buffer'>;
 
-        exsetver(...args: ExSetVerArgs<number>): Return<number, Context>;
+        exsetver: ExSetVer<Context>;
 
-        exincrby(...args: ExIncrByArgs<number>): Return<number, Context>;
+        exincrby: ExIncrBy<Context>;
 
-        exincrbyfloat(...args: ExIncrByFloatArgs<string>): Return<string, Context>;
+        exincrbyfloat: ExIncrByFloat<Context>;
 
-        excas(...args: ExCasArgs<['OK', string, number]>): Return<['OK', string, number], Context>;
-        excasBuffer(...args: ExCasArgs<[Buffer, Buffer, number]>): Return<[Buffer, Buffer, number], Context>;
+        excas: ExCas<Context>;
+        excasBuffer: ExCas<Context, 'buffer'>;
 
-        excad(...args: ExCadArgs<number>): Return<number, Context>;
+        excad: ExCad<Context>;
 
-        exappend(...args: ExAppendArgs<number>): Return<number, Context>;
+        exappend: ExAppend<Context>;
 
-        exprepend(...args: ExPrependArgs<number>): Return<number, Context>;
+        exprepend: ExPrepend<Context>;
 
-        exgae(...args: ExGaeArgs<[string, number, number]>): Return<[string, number, number], Context>;
-        exgaeBuffer(...args: ExGaeArgs<[Buffer, number, number]>): Return<[Buffer, number, number], Context>;
+        exgae: ExGae<Context>;
+        exgaeBuffer: ExGae<Context, 'buffer'>;
     }
 }
