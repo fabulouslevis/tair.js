@@ -1,4 +1,3 @@
-import { Redis } from 'ioredis';
 import { Command, Context, Format, Optional, INCR, CH, WRITE, WITHSCORES, LIMIT } from './types';
 
 export const zsetCommands = [
