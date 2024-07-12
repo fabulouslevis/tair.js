@@ -54,6 +54,14 @@ export type NOEXP = ['NOEXP'];
 
 export type MATCH = ['MATCH', pattern: string];
 
+export type CH = ['CH'];
+
+export type INCR = ['INCR'];
+
+export type WITHSCORES = ['WITHSCORES'];
+
+export type LIMIT = ['LIMIT', offset: number, count: number];
+
 export type VERSION = ['VER' | 'ABS', version: number];
 export type EXPIRE = ['EX' | 'EXAT' | 'PX' | 'PXAT', time: number];
 export type WRITE = ['NX' | 'XX'];

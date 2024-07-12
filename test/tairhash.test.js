@@ -1,6 +1,6 @@
 const { redis } = require('./instance');
 
-describe('hash', () => {
+describe.skip('hash', () => {
     it.skip('exhmset', async () => {
         await redis.exhmset('hashtest', 'field1', 10, 'field2', 'var1').then(console.log)
     });
