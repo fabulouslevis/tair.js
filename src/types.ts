@@ -50,6 +50,10 @@ export type MAX = ['MAX', maxval: number];
 
 export type ITEMS = ['ITEMS', item: string | Buffer, ...items: (string | Buffer)[]];
 
+export type NOEXP = ['NOEXP'];
+
+export type MATCH = ['MATCH', pattern: string];
+
 export type VERSION = ['VER' | 'ABS', version: number];
 export type EXPIRE = ['EX' | 'EXAT' | 'PX' | 'PXAT', time: number];
 export type WRITE = ['NX' | 'XX'];

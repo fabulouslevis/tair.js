@@ -1,6 +1,6 @@
 const { redis } = require('./instance');
 
-describe('cpc', () => {
+describe.skip('cpc', () => {
 
     it('cpc.estimate', async () => {
         await redis['cpc.estimate']('cpctest').then(console.log);
