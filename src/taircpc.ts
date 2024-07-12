@@ -1,4 +1,4 @@
-import { Command, Context, Format, Optional, EXPIRE, SIZE, WIN } from './types';
+import { Command, Context, Optional, EXPIRE, SIZE, WIN } from './types';
 
 export const cpcCommands = [
     'cpc.estimate',

@@ -4,9 +4,9 @@ export type Format = 'default' | 'buffer';
 
 export type Optional<TArgs extends any[]> = TArgs | [];
 
-export type TrimStart<TArgs extends any[]> = TArgs extends [any, ...infer TOtherArgs] ? TOtherArgs : [];
+export type Shift<TArgs extends any[]> = TArgs extends [any, ...infer TOtherArgs] ? TOtherArgs : TArgs;
 
-export type TrimEnd<TArgs extends any[]> = TArgs extends [...infer TOtherArgs, any] ? TOtherArgs : [];
+export type Pop<TArgs extends any[]> = TArgs extends [...infer TOtherArgs, any] ? TOtherArgs : TArgs;
 
 export type Context = ClientContext;
 
@@ -22,7 +22,7 @@ export type NOCREATE = ['NOCREATE'];
 
 export type SIZE = ['SIZE', size: number];
 
-export type WIN = ['WIN', win: number];
+export type WIN = ['WIN', windowLength: number];
 
 export type FORMAT = ['FORMAT', 'XML' | 'YAML'];
 

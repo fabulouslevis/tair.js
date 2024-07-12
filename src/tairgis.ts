@@ -1,4 +1,4 @@
-import { Command, Context, COUNT, Format, GEOM, Optional, SORT, WITHDIST, WITHOUTWKT, RADIUS, MEMBER } from './types';
+import { Command, Context, Format, Optional, COUNT, GEOM, SORT, WITHDIST, WITHOUTWKT, RADIUS, MEMBER } from './types';
 
 export const gisCommands = [
     'gis.add',
