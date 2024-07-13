@@ -1,4 +1,4 @@
-import { Command, Context, Format, Optional, FORMAT, ROOTNAME, ARRNAME, WRITE } from './types';
+import { Command, Context, Format, Optional, FORMAT, ROOTNAME, ARRNAME, LOCK } from './types';
 
 export const docCommands = [
     'json.del',
@@ -38,7 +38,7 @@ export type JsonMGet<TContext extends Context, TFormat extends Format = 'default
 >;
 
 export type JsonSet<TContext extends Context> = Command<
-    [key: string | Buffer, path: string | Buffer, json: string | Buffer, ...Optional<WRITE>],
+    [key: string | Buffer, path: string | Buffer, json: string | Buffer, ...Optional<LOCK>],
     'OK',
     TContext
 >;

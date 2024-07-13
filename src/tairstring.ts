@@ -1,4 +1,4 @@
-import { Command, Context, Format, Optional, EXPIRE, WRITE, VERSION, KEEPTTL, MIN, MAX } from './types';
+import { Command, Context, Format, Optional, EXPIRY, LOCK, VERSION, KEEPTTL, MIN, MAX } from './types';
 
 export const stringCommands = [
     'exset',
@@ -18,8 +18,8 @@ export type ExSet<TContext extends Context> = Command<
         key: string | Buffer,
         value: string | Buffer,
         ...(
-            | [...Optional<EXPIRE>, ...Optional<WRITE>, ...Optional<VERSION>]
-            | [...Optional<WRITE>, ...Optional<VERSION>, ...Optional<KEEPTTL>]
+            | [...Optional<EXPIRY>, ...Optional<LOCK>, ...Optional<VERSION>]
+            | [...Optional<LOCK>, ...Optional<VERSION>, ...Optional<KEEPTTL>]
         ),
     ],
     'OK',
@@ -39,8 +39,8 @@ export type ExIncrBy<TContext extends Context> = Command<
         key: string | Buffer,
         num: number,
         ...(
-            | [...Optional<EXPIRE>, ...Optional<WRITE>, ...Optional<VERSION>, ...Optional<MIN>, ...Optional<MAX>]
-            | [...Optional<WRITE>, ...Optional<VERSION>, ...Optional<MIN>, ...Optional<MAX>, ...Optional<KEEPTTL>]
+            | [...Optional<EXPIRY>, ...Optional<LOCK>, ...Optional<VERSION>, ...Optional<MIN>, ...Optional<MAX>]
+            | [...Optional<LOCK>, ...Optional<VERSION>, ...Optional<MIN>, ...Optional<MAX>, ...Optional<KEEPTTL>]
         ),
     ],
     number,
@@ -52,8 +52,8 @@ export type ExIncrByFloat<TContext extends Context> = Command<
         key: string | Buffer,
         num: number,
         ...(
-            | [...Optional<EXPIRE>, ...Optional<WRITE>, ...Optional<VERSION>, ...Optional<MIN>, ...Optional<MAX>]
-            | [...Optional<WRITE>, ...Optional<VERSION>, ...Optional<MIN>, ...Optional<MAX>, ...Optional<KEEPTTL>]
+            | [...Optional<EXPIRY>, ...Optional<LOCK>, ...Optional<VERSION>, ...Optional<MIN>, ...Optional<MAX>]
+            | [...Optional<LOCK>, ...Optional<VERSION>, ...Optional<MIN>, ...Optional<MAX>, ...Optional<KEEPTTL>]
         ),
     ],
     string,
@@ -69,19 +69,19 @@ export type ExCas<TContext extends Context, TFormat extends Format = 'default'> 
 export type ExCad<TContext extends Context> = Command<[key: string | Buffer, version: number], number, TContext>;
 
 export type ExAppend<TContext extends Context> = Command<
-    [key: string | Buffer, value: string | Buffer, ...WRITE, ...VERSION],
+    [key: string | Buffer, value: string | Buffer, ...LOCK, ...VERSION],
     number,
     TContext
 >;
 
 export type ExPrepend<TContext extends Context> = Command<
-    [key: string | Buffer, value: string | Buffer, ...WRITE, ...VERSION],
+    [key: string | Buffer, value: string | Buffer, ...LOCK, ...VERSION],
     number,
     TContext
 >;
 
 export type ExGae<TContext extends Context, TFormat extends Format = 'default'> = Command<
-    [key: string | Buffer, ...EXPIRE],
+    [key: string | Buffer, ...EXPIRY],
     TFormat extends 'buffer' ? [Buffer, number, number] : [string, number, number],
     TContext
 >;

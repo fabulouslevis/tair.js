@@ -1,4 +1,4 @@
-import { Command, Context, Optional, EXPIRE, SIZE, WIN } from './types';
+import { Command, Context, Optional, EXPIRY, SIZE, WIN } from './types';
 
 export const cpcCommands = [
     'cpc.estimate',
@@ -16,19 +16,19 @@ export const cpcCommands = [
 export type CpcEstimate<TContext extends Context> = Command<[key: string | Buffer], string, TContext>;
 
 export type CpcUpdate<TContext extends Context> = Command<
-    [key: string | Buffer, item: string | Buffer, ...Optional<EXPIRE>],
+    [key: string | Buffer, item: string | Buffer, ...Optional<EXPIRY>],
     'OK',
     TContext
 >;
 
 export type CpcUpdate2Est<TContext extends Context> = Command<
-    [key: string | Buffer, item: string | Buffer, ...Optional<EXPIRE>],
+    [key: string | Buffer, item: string | Buffer, ...Optional<EXPIRY>],
     string,
     TContext
 >;
 
 export type CpcUpdate2Jud<TContext extends Context> = Command<
-    [key: string | Buffer, item: string | Buffer, ...Optional<EXPIRE>],
+    [key: string | Buffer, item: string | Buffer, ...Optional<EXPIRY>],
     [string, string],
     TContext
 >;
@@ -44,7 +44,7 @@ export type CpcArrayUpdate<TContext extends Context> = Command<
         key: string | Buffer,
         timestamp: number,
         item: string | Buffer,
-        ...Optional<EXPIRE>,
+        ...Optional<EXPIRY>,
         ...Optional<SIZE>,
         ...Optional<WIN>,
     ],
@@ -57,7 +57,7 @@ export type CpcArrayUpdate2Est<TContext extends Context> = Command<
         key: string | Buffer,
         timestamp: number,
         item: string | Buffer,
-        ...Optional<EXPIRE>,
+        ...Optional<EXPIRY>,
         ...Optional<SIZE>,
         ...Optional<WIN>,
     ],
@@ -70,7 +70,7 @@ export type CpcArrayUpdate2Jud<TContext extends Context> = Command<
         key: string | Buffer,
         timestamp: number,
         item: string | Buffer,
-        ...Optional<EXPIRE>,
+        ...Optional<EXPIRY>,
         ...Optional<SIZE>,
         ...Optional<WIN>,
     ],

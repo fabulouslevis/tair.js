@@ -1,4 +1,4 @@
-import { Command, Context, Format, Optional, INCR, CH, WRITE, WITHSCORES, LIMIT } from './types';
+import { Command, Context, Format, Optional, INCR, CH, LOCK, WITHSCORES, LIMIT } from './types';
 
 export const zsetCommands = [
     'exzadd',
@@ -25,14 +25,14 @@ export const zsetCommands = [
 
 export type ExZAdd<TContext extends Context, TFromat extends Format = 'default'> = TFromat extends 'buffer'
     ? Command<
-          [key: string | Buffer, ...Optional<WRITE>, ...INCR, score: string, member: string | Buffer],
+          [key: string | Buffer, ...Optional<LOCK>, ...INCR, score: string, member: string | Buffer],
           Buffer,
           TContext
       >
     : Command<
           [
               key: string | Buffer,
-              ...Optional<WRITE>,
+              ...Optional<LOCK>,
               ...Optional<CH>,
               score: string,
               member: string | Buffer,
@@ -42,7 +42,7 @@ export type ExZAdd<TContext extends Context, TFromat extends Format = 'default'>
           TContext
       > &
           Command<
-              [key: string | Buffer, ...Optional<WRITE>, ...INCR, score: string, member: string | Buffer],
+              [key: string | Buffer, ...Optional<LOCK>, ...INCR, score: string, member: string | Buffer],
               string,
               TContext
           >;

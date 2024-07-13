@@ -63,6 +63,6 @@ export type WITHSCORES = ['WITHSCORES'];
 export type LIMIT = ['LIMIT', offset: number, count: number];
 
 export type VERSION = ['VER' | 'ABS', version: number];
-export type EXPIRE = ['EX' | 'EXAT' | 'PX' | 'PXAT', time: number];
-export type WRITE = ['NX' | 'XX'];
+export type EXPIRY = ['EX' | 'EXAT' | 'PX' | 'PXAT', time: number];
+export type LOCK = ['NX' | 'XX'];
 export type SORT = ['ASC' | 'DESC'];
