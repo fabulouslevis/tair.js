@@ -62,6 +62,8 @@ export type WITHSCORES = ['WITHSCORES'];
 
 export type LIMIT = ['LIMIT', offset: number, count: number];
 
+export type WITH_ID = ['WITH_ID', docId: string];
+
 export type VERSION = ['VER' | 'ABS', version: number];
 export type EXPIRY = ['EX' | 'EXAT' | 'PX' | 'PXAT', time: number];
 export type LOCK = ['NX' | 'XX'];
