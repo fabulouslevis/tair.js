@@ -26,21 +26,21 @@ export type WIN = ['WIN', windowLength: number];
 
 export type FORMAT = ['FORMAT', 'XML' | 'YAML'];
 
-export type ROOTNAME = ['ROOTNAME', root: string];
+export type ROOTNAME = ['ROOTNAME', root: string | Buffer];
 
-export type ARRNAME = ['ARRNAME', arr: string];
+export type ARRNAME = ['ARRNAME', arr: string | Buffer];
 
 export type WITHOUTWKT = ['WITHOUTWKT'];
 
 export type WITHDIST = ['WITHDIST'];
 
-export type GEOM = ['GEOM', geom: string];
+export type GEOM = ['GEOM', geom: string | Buffer];
 
 export type COUNT = ['COUNT', count: number];
 
 export type RADIUS = ['RADIUS', longitude: number, latitude: number, distance: number, unit: 'M' | 'KM' | 'FT' | 'MI'];
 
-export type MEMBER = ['MEMBER', field: string, distance: number, unit: 'M' | 'KM' | 'FT' | 'MI'];
+export type MEMBER = ['MEMBER', field: string | Buffer, distance: number, unit: 'M' | 'KM' | 'FT' | 'MI'];
 
 export type KEEPTTL = ['KEEPTTL'];
 
@@ -52,7 +52,7 @@ export type ITEMS = ['ITEMS', item: string | Buffer, ...items: (string | Buffer)
 
 export type NOEXP = ['NOEXP'];
 
-export type MATCH = ['MATCH', pattern: string];
+export type MATCH = ['MATCH', pattern: string | Buffer];
 
 export type CH = ['CH'];
 
@@ -62,7 +62,15 @@ export type WITHSCORES = ['WITHSCORES'];
 
 export type LIMIT = ['LIMIT', offset: number, count: number];
 
-export type WITH_ID = ['WITH_ID', docId: string];
+export type WITH_ID = ['WITH_ID', docId: string | Buffer];
+
+export type INDEX = ['INDEX', indexName: string | Buffer];
+
+export type SHOW_TIME = ['SHOW_TIME'];
+
+export type MAX_COUNT = ['MAX_COUNT', count: number];
+
+export type FUZZY = ['FUZZY'];
 
 export type VERSION = ['VER' | 'ABS', version: number];
 export type EXPIRY = ['EX' | 'EXAT' | 'PX' | 'PXAT', time: number];

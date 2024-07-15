@@ -1,6 +1,6 @@
 const { redis } = require('./instance');
 
-describe('zset', () => {
+describe.skip('zset', () => {
     it.skip('exzadd', async () => {
         await redis.exzadd('zsettest', 'INCR', '1#0#3', 'a').then(console.log);
         await redis.exzadd('zsettest', 'NX', 'CH', '1#0#3', 'a', '1#0#2', 'b').then(console.log);

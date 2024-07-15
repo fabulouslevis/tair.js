@@ -36,7 +36,7 @@ export type ExZAdd<TContext extends Context, TFromat extends Format = 'default'>
               ...Optional<CH>,
               score: string,
               member: string | Buffer,
-              ...scoreMembers: (number | string | Buffer)[],
+              ...scoreMembers: (string | Buffer)[],
           ],
           number,
           TContext
