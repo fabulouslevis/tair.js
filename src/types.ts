@@ -72,6 +72,8 @@ export type MAX_COUNT = ['MAX_COUNT', count: number];
 
 export type FUZZY = ['FUZZY'];
 
+export type JSON = ['JSON'];
+
 export type VERSION = ['VER' | 'ABS', version: number];
 export type EXPIRY = ['EX' | 'EXAT' | 'PX' | 'PXAT', time: number];
 export type LOCK = ['NX' | 'XX'];

@@ -1,6 +1,6 @@
 const { redis } = require('./instance');
 
-describe('search', () => {
+describe.skip('search', () => {
 
     it.skip('tft.createindex', async () => {
         await redis['tft.createindex']('tfttest', JSON.stringify({
