@@ -1,4 +1,18 @@
-import { Command, Context, Format, Optional, COUNT, GEOM, SORT, WITHDIST, WITHOUTWKT, RADIUS, MEMBER } from './types';
+import {
+    Command,
+    Context,
+    Format,
+    Optional,
+    StringType,
+    OkType,
+    COUNT,
+    GEOM,
+    SORT,
+    WITHDIST,
+    WITHOUTWKT,
+    RADIUS,
+    MEMBER,
+} from './types';
 
 export const gisCommands = [
     'gis.add',
@@ -12,26 +26,22 @@ export const gisCommands = [
 ];
 
 export type GisAdd<TContext extends Context> = Command<
-    [key: string | Buffer, polygonName: string | Buffer, polygonWktText: string | Buffer],
+    [key: StringType, polygonName: StringType, polygonWktText: StringType],
     number,
     TContext
 >;
 
 export type GisGet<TContext extends Context, TFormat extends Format = 'default'> = Command<
-    [key: string | Buffer, polygonName: string | Buffer],
+    [key: StringType, polygonName: StringType],
     TFormat extends 'buffer' ? Buffer : string,
     TContext
 >;
 
-export type GisDel<TContext extends Context> = Command<
-    [key: string | Buffer, polygonName: string | Buffer],
-    'OK',
-    TContext
->;
+export type GisDel<TContext extends Context> = Command<[key: StringType, polygonName: StringType], OkType, TContext>;
 
 export type GisSearch<TContext extends Context, TFormat extends Format = 'default'> = Command<
     [
-        key: string | Buffer,
+        key: StringType,
         ...(RADIUS | MEMBER),
         ...Optional<GEOM>,
         ...Optional<COUNT>,
@@ -44,25 +54,25 @@ export type GisSearch<TContext extends Context, TFormat extends Format = 'defaul
 >;
 
 export type GisContains<TContext extends Context, TFormat extends Format = 'default'> = Command<
-    [key: string | Buffer, polygonWkt: string | Buffer, ...Optional<WITHOUTWKT>],
+    [key: StringType, polygonWkt: StringType, ...Optional<WITHOUTWKT>],
     TFormat extends 'buffer' ? [number, Buffer[]] : [number, string[]],
     TContext
 >;
 
 export type GisWithin<TContext extends Context, TFormat extends Format = 'default'> = Command<
-    [key: string | Buffer, polygonWkt: string | Buffer, ...Optional<WITHOUTWKT>],
+    [key: StringType, polygonWkt: StringType, ...Optional<WITHOUTWKT>],
     TFormat extends 'buffer' ? [number, Buffer[]] : [number, string[]],
     TContext
 >;
 
 export type GisIntersects<TContext extends Context, TFormat extends Format = 'default'> = Command<
-    [key: string | Buffer, polygonWkt: string | Buffer, ...Optional<WITHOUTWKT>],
+    [key: StringType, polygonWkt: StringType, ...Optional<WITHOUTWKT>],
     TFormat extends 'buffer' ? [number, Buffer[]] : [number, string[]],
     TContext
 >;
 
 export type GisGetAll<TContext extends Context, TFormat extends Format = 'default'> = Command<
-    [key: string | Buffer, ...Optional<WITHOUTWKT>],
+    [key: StringType, ...Optional<WITHOUTWKT>],
     TFormat extends 'buffer' ? Buffer[] : string[],
     TContext
 >;

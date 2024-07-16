@@ -1,33 +1,29 @@
-import { Command, Context, Format, Optional, Shift, CAPACITY, ERROR, NOCREATE, ITEMS } from './types';
+import { Command, Context, Format, Optional, Shift, StringType, CAPACITY, ERROR, NOCREATE, ITEMS } from './types';
 
 export const bloomCommands = ['bf.add', 'bf.madd', 'bf.exists', 'bf.mexists', 'bf.insert', 'bf.reserve', 'bf.info'];
 
-export type BfAdd<TContext extends Context> = Command<[key: string | Buffer, item: string | Buffer], number, TContext>;
+export type BfAdd<TContext extends Context> = Command<[key: StringType, item: StringType], number, TContext>;
 
-export type BfMAdd<TContext extends Context> = Command<[key: string | Buffer, ...Shift<ITEMS>], number[], TContext>;
+export type BfMAdd<TContext extends Context> = Command<[key: StringType, ...Shift<ITEMS>], number[], TContext>;
 
-export type BfExists<TContext extends Context> = Command<
-    [key: string | Buffer, item: string | Buffer],
-    number,
-    TContext
->;
+export type BfExists<TContext extends Context> = Command<[key: StringType, item: StringType], number, TContext>;
 
-export type BfMExists<TContext extends Context> = Command<[key: string | Buffer, ...Shift<ITEMS>], number[], TContext>;
+export type BfMExists<TContext extends Context> = Command<[key: StringType, ...Shift<ITEMS>], number[], TContext>;
 
 export type BfInsert<TContext extends Context> = Command<
-    [key: string | Buffer, ...([...Optional<CAPACITY>, ...Optional<ERROR>] | NOCREATE), ...ITEMS],
+    [key: StringType, ...([...Optional<CAPACITY>, ...Optional<ERROR>] | NOCREATE), ...ITEMS],
     number[],
     TContext
 >;
 
 export type BfReserve<TContext extends Context> = Command<
-    [key: string | Buffer, ...Shift<ERROR>, ...Shift<CAPACITY>],
-    'OK',
+    [key: StringType, ...Shift<ERROR>, ...Shift<CAPACITY>],
+    StringType,
     TContext
 >;
 
 export type BfInfo<TContext extends Context, TFormat extends Format = 'default'> = Command<
-    [key: string | Buffer],
+    [key: StringType],
     TFormat extends 'buffer' ? Buffer[] : string[],
     TContext
 >;

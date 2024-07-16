@@ -1,4 +1,19 @@
-import { Command, Context, Optional, Format, COUNT, INDEX, MATCH, SHOW_TIME, WITH_ID, MAX_COUNT, FUZZY } from './types';
+import {
+    Command,
+    Context,
+    Optional,
+    Format,
+    StringType,
+    OkType,
+    NumberType,
+    COUNT,
+    INDEX,
+    MATCH,
+    SHOW_TIME,
+    WITH_ID,
+    MAX_COUNT,
+    FUZZY,
+} from './types';
 
 export const searchCommands = [
     'tft.createindex',
@@ -29,139 +44,135 @@ export const searchCommands = [
 ];
 
 export type TftCreateIndex<TContext extends Context> = Command<
-    [index: string | Buffer, mappings: string | Buffer, ...Optional<[settings: string | Buffer]>],
-    'OK',
+    [index: StringType, mappings: StringType, ...Optional<[settings: StringType]>],
+    OkType,
     TContext
 >;
 
 export type TftUpdateIndex<TContext extends Context> = Command<
-    [index: string | Buffer, mappings: string | Buffer, ...Optional<[settings: string | Buffer]>],
-    'OK',
+    [index: StringType, mappings: StringType, ...Optional<[settings: StringType]>],
+    OkType,
     TContext
 >;
 
 export type TftGetIndex<TContext extends Context, TFormat extends Format = 'default'> = Command<
-    [index: string | Buffer],
+    [index: StringType],
     TFormat extends 'buffer' ? Buffer : string,
     TContext
 >;
 
 export type TftAddDoc<TContext extends Context, TFormat extends Format = 'default'> = Command<
-    [index: string | Buffer, document: string | Buffer, ...Optional<WITH_ID>],
+    [index: StringType, document: StringType, ...Optional<WITH_ID>],
     TFormat extends 'buffer' ? Buffer : string,
     TContext
 >;
 
 export type TftMAddDoc<TContext extends Context> = Command<
-    [index: string | Buffer, document: string | Buffer, docId: string | Buffer, ...documentDocIds: (string | Buffer)[]],
-    'OK',
+    [index: StringType, document: StringType, docId: StringType, ...documentDocIds: StringType[]],
+    OkType,
     TContext
 >;
 
 export type TftUpdateDocField<TContext extends Context> = Command<
-    [index: string | Buffer, docId: string | Buffer, document: string | Buffer],
-    'OK',
+    [index: StringType, docId: StringType, document: StringType],
+    OkType,
     TContext
 >;
 
 export type TftDelDocField<TContext extends Context> = Command<
-    [index: string | Buffer, docId: string | Buffer, field: string | Buffer, ...fields: (string | Buffer)[]],
+    [index: StringType, docId: StringType, field: StringType, ...fields: StringType[]],
     number,
     TContext
 >;
 
 export type TftIncrLongDocField<TContext extends Context> = Command<
-    [index: string | Buffer, docId: string | Buffer, field: string | Buffer, increment: number],
+    [index: StringType, docId: StringType, field: StringType, increment: number],
     number,
     TContext
 >;
 
 export type TftIncrFloatDocField<TContext extends Context> = Command<
-    [index: string | Buffer, docId: string | Buffer, field: string | Buffer, increment: string],
-    string,
+    [index: StringType, docId: StringType, field: StringType, increment: number],
+    NumberType,
     TContext
 >;
 
 export type TftGetDoc<TContext extends Context, TFormat extends Format = 'default'> = Command<
-    [index: string | Buffer, docId: string | Buffer],
+    [index: StringType, docId: StringType],
     TFormat extends 'buffer' ? Buffer : string,
     TContext
 >;
 
-export type TftExists<TContext extends Context> = Command<
-    [index: string | Buffer, docId: string | Buffer],
-    number,
-    TContext
->;
+export type TftExists<TContext extends Context> = Command<[index: StringType, docId: StringType], number, TContext>;
 
-export type TftDocNum<TContext extends Context> = Command<[index: string | Buffer], number, TContext>;
+export type TftDocNum<TContext extends Context> = Command<[index: StringType], number, TContext>;
 
 export type TftScanDocId<TContext extends Context, TFormat extends Format = 'default'> = Command<
-    [index: string | Buffer, cursor: number, ...Optional<MATCH>, ...Optional<COUNT>],
+    [index: StringType, cursor: number, ...Optional<MATCH>, ...Optional<COUNT>],
     TFormat extends 'buffer' ? [Buffer, Buffer[]] : [string, string[]],
     TContext
 >;
 
 export type TftDelDoc<TContext extends Context> = Command<
-    [index: string | Buffer, docId: string | Buffer, ...docIds: (string | Buffer)[]],
+    [index: StringType, docId: StringType, ...docIds: StringType[]],
     string,
     TContext
 >;
 
-export type TftDelAll<TContext extends Context> = Command<[index: string | Buffer], 'OK', TContext>;
+export type TftDelAll<TContext extends Context> = Command<[index: StringType], OkType, TContext>;
 
 export type TftAnalyzer<TContext extends Context, TFormat extends Format = 'default'> = Command<
-    [analyzerName: string | Buffer, text: string | Buffer, ...Optional<INDEX>, ...Optional<SHOW_TIME>],
+    [analyzerName: StringType, text: StringType, ...Optional<INDEX>, ...Optional<SHOW_TIME>],
     TFormat extends 'buffer' ? Buffer : string,
     TContext
 >;
 
 export type TftSearch<TContext extends Context, TFormat extends Format = 'default'> = Command<
-    [index: string | Buffer, query: string | Buffer],
+    [index: StringType, query: StringType],
     TFormat extends 'buffer' ? Buffer : string,
     TContext
 >;
 
 export type TftMSearch<TContext extends Context, TFormat extends Format = 'default'> = Command<
-    [indexCount: number, index: string | Buffer, ...indexes: (string | Buffer)[], query: string | Buffer],
+    [indexCount: number, index: StringType, ...indexes: StringType[], query: StringType],
     TFormat extends 'buffer' ? Buffer : string,
     TContext
 >;
 
 export type TftExplainCost<TContext extends Context, TFormat extends Format = 'default'> = Command<
-    [index: string | Buffer, query: string | Buffer],
+    [index: StringType, query: StringType],
     TFormat extends 'buffer' ? Buffer : string,
     TContext
 >;
 
 export type TftExplainScore<TContext extends Context, TFormat extends Format = 'default'> = Command<
-    [index: string | Buffer, query: string | Buffer, ...docIds: (string | Buffer)[]],
+    [index: StringType, query: StringType, ...docIds: StringType[]],
     TFormat extends 'buffer' ? Buffer : string,
     TContext
 >;
 
 export type TftAddSug<TContext extends Context> = Command<
-    [index: string | Buffer, text: string | Buffer, weight: number, ...textWeights: (string | Buffer | number)[]],
+    [index: StringType, text: StringType, weight: number, ...textWeights: (StringType | number)[]],
     number,
     TContext
 >;
 
 export type TftDelSug<TContext extends Context> = Command<
-    [index: string | Buffer, text: string | Buffer, ...texts: (string | Buffer)[]],
+    [index: StringType, text: StringType, ...texts: StringType[]],
     number,
     TContext
 >;
 
-export type TftSugNum<TContext extends Context> = Command<[index: string | Buffer], number, TContext>;
+export type TftSugNum<TContext extends Context> = Command<[index: StringType], number, TContext>;
 
 export type TftGetSug<TContext extends Context, TFormat extends Format = 'default'> = Command<
-    [index: string | Buffer, prefix: string | Buffer, ...Optional<MAX_COUNT>, ...Optional<FUZZY>],
+    [index: StringType, prefix: StringType, ...Optional<MAX_COUNT>, ...Optional<FUZZY>],
     TFormat extends 'buffer' ? Buffer[] : string[],
     TContext
 >;
 
 export type TftGetAllSugs<TContext extends Context, TFormat extends Format = 'default'> = Command<
-    [index: string | Buffer],
+    [index: StringType],
     TFormat extends 'buffer' ? Buffer[] : string[],
     TContext
 >;

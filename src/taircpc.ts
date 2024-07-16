@@ -1,4 +1,4 @@
-import { Command, Context, Optional, EXPIRY, SIZE, WIN } from './types';
+import { Command, Context, Optional, StringType, OkType, NumberType, EXPIRY, SIZE, WIN } from './types';
 
 export const cpcCommands = [
     'cpc.estimate',
@@ -13,80 +13,59 @@ export const cpcCommands = [
     'cpc.array.estimate.range.merge',
 ];
 
-export type CpcEstimate<TContext extends Context> = Command<[key: string | Buffer], string, TContext>;
+export type CpcEstimate<TContext extends Context> = Command<[key: StringType], NumberType, TContext>;
 
 export type CpcUpdate<TContext extends Context> = Command<
-    [key: string | Buffer, item: string | Buffer, ...Optional<EXPIRY>],
-    'OK',
+    [key: StringType, item: StringType, ...Optional<EXPIRY>],
+    OkType,
     TContext
 >;
 
 export type CpcUpdate2Est<TContext extends Context> = Command<
-    [key: string | Buffer, item: string | Buffer, ...Optional<EXPIRY>],
-    string,
+    [key: StringType, item: StringType, ...Optional<EXPIRY>],
+    NumberType,
     TContext
 >;
 
 export type CpcUpdate2Jud<TContext extends Context> = Command<
-    [key: string | Buffer, item: string | Buffer, ...Optional<EXPIRY>],
-    [string, string],
+    [key: StringType, item: StringType, ...Optional<EXPIRY>],
+    [NumberType, NumberType],
     TContext
 >;
 
 export type CpcArrayEstimate<TContext extends Context> = Command<
-    [key: string | Buffer, timestamp: number],
-    string,
+    [key: StringType, timestamp: number],
+    NumberType,
     TContext
 >;
 
 export type CpcArrayUpdate<TContext extends Context> = Command<
-    [
-        key: string | Buffer,
-        timestamp: number,
-        item: string | Buffer,
-        ...Optional<EXPIRY>,
-        ...Optional<SIZE>,
-        ...Optional<WIN>,
-    ],
-    'OK',
+    [key: StringType, timestamp: number, item: StringType, ...Optional<EXPIRY>, ...Optional<SIZE>, ...Optional<WIN>],
+    OkType,
     TContext
 >;
 
 export type CpcArrayUpdate2Est<TContext extends Context> = Command<
-    [
-        key: string | Buffer,
-        timestamp: number,
-        item: string | Buffer,
-        ...Optional<EXPIRY>,
-        ...Optional<SIZE>,
-        ...Optional<WIN>,
-    ],
-    string,
+    [key: StringType, timestamp: number, item: StringType, ...Optional<EXPIRY>, ...Optional<SIZE>, ...Optional<WIN>],
+    NumberType,
     TContext
 >;
 
 export type CpcArrayUpdate2Jud<TContext extends Context> = Command<
-    [
-        key: string | Buffer,
-        timestamp: number,
-        item: string | Buffer,
-        ...Optional<EXPIRY>,
-        ...Optional<SIZE>,
-        ...Optional<WIN>,
-    ],
-    [string, string],
+    [key: StringType, timestamp: number, item: StringType, ...Optional<EXPIRY>, ...Optional<SIZE>, ...Optional<WIN>],
+    [NumberType, NumberType],
     TContext
 >;
 
 export type CpcArrayEstimateRange<TContext extends Context> = Command<
-    [key: string | Buffer, startTime: number, endTime: number],
-    string[],
+    [key: StringType, startTime: number, endTime: number],
+    NumberType[],
     TContext
 >;
 
 export type CpcArrayEstimateRangeMerge<TContext extends Context> = Command<
-    [key: string | Buffer, timestamp: number, range: number],
-    string,
+    [key: StringType, timestamp: number, range: number],
+    NumberType,
     TContext
 >;
 

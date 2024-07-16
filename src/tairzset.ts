@@ -1,4 +1,4 @@
-import { Command, Context, Format, Optional, INCR, CH, LOCK, WITHSCORES, LIMIT } from './types';
+import { Command, Context, Format, Optional, StringType, OkType, INCR, CH, LOCK, WITHSCORES, LIMIT } from './types';
 
 export const zsetCommands = [
     'exzadd',
@@ -24,131 +24,119 @@ export const zsetCommands = [
 ];
 
 export type ExZAdd<TContext extends Context, TFromat extends Format = 'default'> = TFromat extends 'buffer'
-    ? Command<
-          [key: string | Buffer, ...Optional<LOCK>, ...INCR, score: string, member: string | Buffer],
-          Buffer,
-          TContext
-      >
+    ? Command<[key: StringType, ...Optional<LOCK>, ...INCR, score: StringType, member: StringType], Buffer, TContext>
     : Command<
           [
-              key: string | Buffer,
+              key: StringType,
               ...Optional<LOCK>,
               ...Optional<CH>,
-              score: string,
-              member: string | Buffer,
-              ...scoreMembers: (string | Buffer)[],
+              score: StringType,
+              member: StringType,
+              ...scoreMembers: StringType[],
           ],
           number,
           TContext
       > &
           Command<
-              [key: string | Buffer, ...Optional<LOCK>, ...INCR, score: string, member: string | Buffer],
+              [key: StringType, ...Optional<LOCK>, ...INCR, score: StringType, member: StringType],
               string,
               TContext
           >;
 
 export type ExZIncrBy<TContext extends Context, TFromat extends Format = 'default'> = Command<
-    [key: string | Buffer, increment: string, member: string | Buffer],
+    [key: StringType, increment: StringType, member: StringType],
     TFromat extends 'buffer' ? Buffer : string,
     TContext
 >;
 
 export type ExZScore<TContext extends Context, TFromat extends Format = 'default'> = Command<
-    [key: string | Buffer, member: string | Buffer],
+    [key: StringType, member: StringType],
     TFromat extends 'buffer' ? Buffer : string,
     TContext
 >;
 
 export type ExZRange<TContext extends Context, TFromat extends Format = 'default'> = Command<
-    [key: string | Buffer, min: number, max: number, ...Optional<WITHSCORES>],
+    [key: StringType, min: number, max: number, ...Optional<WITHSCORES>],
     TFromat extends 'buffer' ? Buffer[] : string[],
     TContext
 >;
 
 export type ExZRevRange<TContext extends Context, TFromat extends Format = 'default'> = Command<
-    [key: string | Buffer, min: number, max: number, ...Optional<WITHSCORES>],
+    [key: StringType, min: number, max: number, ...Optional<WITHSCORES>],
     TFromat extends 'buffer' ? Buffer[] : string[],
     TContext
 >;
 
 export type ExZRangeByScore<TContext extends Context, TFromat extends Format = 'default'> = Command<
-    [key: string | Buffer, min: string, max: string, ...Optional<WITHSCORES>, ...Optional<LIMIT>],
+    [key: StringType, min: StringType, max: StringType, ...Optional<WITHSCORES>, ...Optional<LIMIT>],
     TFromat extends 'buffer' ? Buffer[] : string[],
     TContext
 >;
 
 export type ExZRevRangeByScore<TContext extends Context, TFromat extends Format = 'default'> = Command<
-    [key: string | Buffer, min: string, max: string, ...Optional<WITHSCORES>, ...Optional<LIMIT>],
+    [key: StringType, min: StringType, max: StringType, ...Optional<WITHSCORES>, ...Optional<LIMIT>],
     TFromat extends 'buffer' ? Buffer[] : string[],
     TContext
 >;
 
 export type ExZRangeByLex<TContext extends Context, TFromat extends Format = 'default'> = Command<
-    [key: string | Buffer, min: string, max: string, ...Optional<WITHSCORES>, ...Optional<LIMIT>],
+    [key: StringType, min: StringType, max: StringType, ...Optional<WITHSCORES>, ...Optional<LIMIT>],
     TFromat extends 'buffer' ? Buffer[] : string[],
     TContext
 >;
 
 export type ExZRevRangeByLex<TContext extends Context, TFromat extends Format = 'default'> = Command<
-    [key: string | Buffer, min: string, max: string, ...Optional<WITHSCORES>, ...Optional<LIMIT>],
+    [key: StringType, min: StringType, max: StringType, ...Optional<WITHSCORES>, ...Optional<LIMIT>],
     TFromat extends 'buffer' ? Buffer[] : string[],
     TContext
 >;
 
 export type ExZRem<TContext extends Context> = Command<
-    [key: string | Buffer, member: string | Buffer, ...members: (string | Buffer)[]],
+    [key: StringType, member: StringType, ...members: StringType[]],
     number,
     TContext
 >;
 
 export type ExZRemRangeByScore<TContext extends Context> = Command<
-    [key: string | Buffer, min: string, max: string],
+    [key: StringType, min: StringType, max: StringType],
     number,
     TContext
 >;
 
 export type ExZRemRangeByRank<TContext extends Context> = Command<
-    [key: string | Buffer, start: number, stop: number],
+    [key: StringType, start: number, stop: number],
     number,
     TContext
 >;
 
 export type ExZRemRangeByLex<TContext extends Context> = Command<
-    [key: string | Buffer, min: string, max: string],
+    [key: StringType, min: StringType, max: StringType],
     number,
     TContext
 >;
 
-export type ExZCard<TContext extends Context> = Command<[key: string | Buffer], number, TContext>;
+export type ExZCard<TContext extends Context> = Command<[key: StringType], number, TContext>;
 
-export type ExZRank<TContext extends Context> = Command<
-    [key: string | Buffer, member: string | Buffer],
-    number,
-    TContext
->;
+export type ExZRank<TContext extends Context> = Command<[key: StringType, member: StringType], number, TContext>;
 
-export type ExZRevRank<TContext extends Context> = Command<
-    [key: string | Buffer, member: string | Buffer],
-    number,
-    TContext
->;
+export type ExZRevRank<TContext extends Context> = Command<[key: StringType, member: StringType], number, TContext>;
 
 export type ExZCount<TContext extends Context> = Command<
-    [key: string | Buffer, min: string, max: string],
+    [key: StringType, min: StringType, max: StringType],
     number,
     TContext
 >;
 
 export type ExZLexCount<TContext extends Context> = Command<
-    [key: string | Buffer, min: string, max: string],
+    [key: StringType, min: StringType, max: StringType],
     number,
     TContext
 >;
 
-export type ExZRankByScore<TContext extends Context> = Command<[key: string | Buffer, score: string], number, TContext>;
+export type ExZRankByScore<TContext extends Context> = Command<[key: StringType, score: StringType], number, TContext>;
 
 export type ExZRevRankByScore<TContext extends Context> = Command<
-    [key: string | Buffer, score: string],
+    [key: StringType, score: StringType],
     number,
     TContext
 >;

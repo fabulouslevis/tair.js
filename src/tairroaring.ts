@@ -1,4 +1,16 @@
-import { Command, Context, Format, Optional, Shift, COUNT, JSON } from './types';
+import {
+    Command,
+    Context,
+    Format,
+    Optional,
+    Shift,
+    StringType,
+    OkType,
+    BitType,
+    NumberType,
+    COUNT,
+    JSON,
+} from './types';
 
 export const roaringCommands = [
     'tr.setbit',
@@ -30,140 +42,125 @@ export const roaringCommands = [
     'tr.diff',
 ];
 
+type OperationType = 'AND' | 'OR' | 'XOR' | 'NOT' | 'DIFF';
+
 export type TrSetBit<TContext extends Context> = Command<
-    [key: string | Buffer, offset: number, value: 0 | 1],
+    [key: StringType, offset: number, value: BitType],
     number,
     TContext
 >;
 
 export type TrSetBits<TContext extends Context> = Command<
-    [key: string | Buffer, offset: number, ...offsets: number[]],
+    [key: StringType, offset: number, ...offsets: number[]],
     number,
     TContext
 >;
 
 export type TrClearBits<TContext extends Context> = Command<
-    [key: string | Buffer, offset: number, ...offsets: number[]],
+    [key: StringType, offset: number, ...offsets: number[]],
     number,
     TContext
 >;
 
 export type TrSetRange<TContext extends Context> = Command<
-    [key: string | Buffer, start: number, end: number],
+    [key: StringType, start: number, end: number],
     number,
     TContext
 >;
 
 export type TrAppendBitArray<TContext extends Context> = Command<
-    [key: string | Buffer, offset: number, bitarray: string | Buffer],
+    [key: StringType, offset: number, bitarray: StringType],
     number,
     TContext
 >;
 
 export type TrFlipRange<TContext extends Context> = Command<
-    [key: string | Buffer, start: number, end: number],
+    [key: StringType, start: number, end: number],
     number,
     TContext
 >;
 
 export type TrAppendIntArray<TContext extends Context> = Command<
-    [key: string | Buffer, value: number, ...values: number[]],
-    'OK',
+    [key: StringType, value: number, ...values: number[]],
+    OkType,
     TContext
 >;
 
 export type TrSetIntArray<TContext extends Context> = Command<
-    [key: string | Buffer, value: number, ...values: number[]],
-    'OK',
+    [key: StringType, value: number, ...values: number[]],
+    OkType,
     TContext
 >;
 
-export type TrSetBitArray<TContext extends Context> = Command<
-    [key: string | Buffer, value: string | Buffer],
-    'OK',
-    TContext
->;
+export type TrSetBitArray<TContext extends Context> = Command<[key: StringType, value: StringType], OkType, TContext>;
 
 export type TrBitOp<TContext extends Context> = Command<
-    [
-        destkey: string | Buffer,
-        operation: 'AND' | 'OR' | 'XOR' | 'NOT' | 'DIFF',
-        key: string | Buffer,
-        ...keys: (string | Buffer)[],
-    ],
+    [destkey: StringType, operation: OperationType, key: StringType, ...keys: StringType[]],
     number,
     TContext
 >;
 
 export type TrBitOpCard<TContext extends Context> = Command<
-    [operation: 'AND' | 'OR' | 'XOR' | 'NOT' | 'DIFF', key: string | Buffer, ...keys: (string | Buffer)[]],
+    [operation: OperationType, key: StringType, ...keys: StringType[]],
     number,
     TContext
 >;
 
-export type TrOptimize<TContext extends Context> = Command<[key: string | Buffer], 'OK', TContext>;
+export type TrOptimize<TContext extends Context> = Command<[key: StringType], OkType, TContext>;
 
-export type TrGetBit<TContext extends Context> = Command<[key: string | Buffer, offset: number], 0 | 1, TContext>;
+export type TrGetBit<TContext extends Context> = Command<[key: StringType, offset: number], BitType, TContext>;
 
 export type TrGetBits<TContext extends Context> = Command<
-    [key: string | Buffer, offset: number, ...offsets: number[]],
-    (0 | 1)[],
+    [key: StringType, offset: number, ...offsets: number[]],
+    BitType[],
     TContext
 >;
 
 export type TrBitCount<TContext extends Context> = Command<
-    [key: string | Buffer, ...Optional<[start: number, end: number]>],
+    [key: StringType, ...Optional<[start: number, end: number]>],
     number,
     TContext
 >;
 
 export type TrBitOps<TContext extends Context> = Command<
-    [key: string | Buffer, value: 0 | 1, ...Optional<Shift<COUNT>>],
+    [key: StringType, value: BitType, ...Optional<Shift<COUNT>>],
     number,
     TContext
 >;
 
 export type TrScan<TContext extends Context> = Command<
-    [key: string | Buffer, startOffset: number, ...Optional<COUNT>],
+    [key: StringType, startOffset: number, ...Optional<COUNT>],
     [number, number[]],
     TContext
 >;
 
 export type TrRange<TContext extends Context> = Command<
-    [key: string | Buffer, start: number, end: number],
+    [key: StringType, start: number, end: number],
     number[],
     TContext
 >;
 
 export type TrRangeBitArray<TContext extends Context, TFormat extends Format = 'default'> = Command<
-    [key: string | Buffer, start: number, end: number],
+    [key: StringType, start: number, end: number],
     TFormat extends 'buffer' ? Buffer : string,
     TContext
 >;
 
-export type TrMin<TContext extends Context> = Command<[key: string | Buffer], number, TContext>;
+export type TrMin<TContext extends Context> = Command<[key: StringType], number, TContext>;
 
-export type TrMax<TContext extends Context> = Command<[key: string | Buffer], number, TContext>;
+export type TrMax<TContext extends Context> = Command<[key: StringType], number, TContext>;
 
 export type TrStat<TContext extends Context, TFormat extends Format = 'default'> = Command<
-    [key: string | Buffer, ...Optional<JSON>],
+    [key: StringType, ...Optional<JSON>],
     TFormat extends 'buffer' ? Buffer : string,
     TContext
 >;
 
-export type TrJaccard<TContext extends Context> = Command<
-    [key1: string | Buffer, key2: string | Buffer],
-    string,
-    TContext
->;
+export type TrJaccard<TContext extends Context> = Command<[key1: StringType, key2: StringType], NumberType, TContext>;
 
-export type TrContains<TContext extends Context> = Command<
-    [key1: string | Buffer, key2: string | Buffer],
-    0 | 1,
-    TContext
->;
+export type TrContains<TContext extends Context> = Command<[key1: StringType, key2: StringType], BitType, TContext>;
 
-export type TrRank<TContext extends Context> = Command<[key: string | Buffer, offset: number], number, TContext>;
+export type TrRank<TContext extends Context> = Command<[key: StringType, offset: number], number, TContext>;
 
 declare module 'ioredis' {
     interface RedisCommander<Context> {

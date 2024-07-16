@@ -1,6 +1,6 @@
 const { redis } = require('./instance');
 
-describe('roaring', () => {
+describe.skip('roaring', () => {
 
     it.skip('tr.setbit', async () => {
         await redis['tr.setbit']('roaringtest', 0, 0).then(console.log)

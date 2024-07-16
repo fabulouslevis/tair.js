@@ -3,6 +3,8 @@ import {
     Context,
     Format,
     Optional,
+    StringType,
+    OkType,
     EXPIRY,
     LOCK,
     VERSION,
@@ -44,11 +46,13 @@ export const hashCommands = [
     'exhdel',
 ];
 
+type OpType = '>' | '>=' | '<' | '<=' | '==' | '^' | '$';
+
 export type ExHSet<TContext extends Context> = Command<
     [
-        key: string | Buffer,
-        field: string | Buffer,
-        value: string | Buffer,
+        key: StringType,
+        field: StringType,
+        value: StringType,
         ...Optional<EXPIRY>,
         ...Optional<LOCK>,
         ...Optional<VERSION>,
@@ -59,69 +63,57 @@ export type ExHSet<TContext extends Context> = Command<
 >;
 
 export type ExHGet<TContext extends Context, TFromat extends Format = 'default'> = Command<
-    [key: string | Buffer, field: string | Buffer],
+    [key: StringType, field: StringType],
     TFromat extends 'buffer' ? Buffer : string,
     TContext
 >;
 
 export type ExHMSet<TContext extends Context> = Command<
-    [key: string | Buffer, field: string | Buffer, value: string | Buffer, ...filedValues: (string | Buffer)[]],
-    'OK',
+    [key: StringType, field: StringType, value: StringType, ...filedValues: StringType[]],
+    OkType,
     TContext
 >;
 
 export type ExHPExpireAt<TContext extends Context> = Command<
-    [key: string | Buffer, field: string | Buffer, millisecondsTimestamp: number, ...Optional<VERSION>],
+    [key: StringType, field: StringType, millisecondsTimestamp: number, ...Optional<VERSION>],
     number,
     TContext
 >;
 
 export type ExHPExpire<TContext extends Context> = Command<
-    [key: string | Buffer, field: string | Buffer, milliseconds: number, ...Optional<VERSION>],
+    [key: StringType, field: StringType, milliseconds: number, ...Optional<VERSION>],
     number,
     TContext
 >;
 
 export type ExHExpireAt<TContext extends Context> = Command<
-    [key: string | Buffer, field: string | Buffer, timestamp: number, ...Optional<VERSION>],
+    [key: StringType, field: StringType, timestamp: number, ...Optional<VERSION>],
     number,
     TContext
 >;
 
 export type ExHExpire<TContext extends Context> = Command<
-    [key: string | Buffer, field: string | Buffer, seconds: number, ...Optional<VERSION>],
+    [key: StringType, field: StringType, seconds: number, ...Optional<VERSION>],
     number,
     TContext
 >;
 
-export type ExHPTtl<TContext extends Context> = Command<
-    [key: string | Buffer, field: string | Buffer],
-    number,
-    TContext
->;
+export type ExHPTtl<TContext extends Context> = Command<[key: StringType, field: StringType], number, TContext>;
 
-export type ExHTtl<TContext extends Context> = Command<
-    [key: string | Buffer, field: string | Buffer],
-    number,
-    TContext
->;
+export type ExHTtl<TContext extends Context> = Command<[key: StringType, field: StringType], number, TContext>;
 
-export type ExHVer<TContext extends Context> = Command<
-    [key: string | Buffer, field: string | Buffer],
-    number,
-    TContext
->;
+export type ExHVer<TContext extends Context> = Command<[key: StringType, field: StringType], number, TContext>;
 
 export type ExHSetVer<TContext extends Context> = Command<
-    [key: string | Buffer, field: string | Buffer, version: number],
+    [key: StringType, field: StringType, version: number],
     number,
     TContext
 >;
 
 export type ExHIncrBy<TContext extends Context> = Command<
     [
-        key: string | Buffer,
-        field: string | Buffer,
+        key: StringType,
+        field: StringType,
         num: number,
         ...Optional<EXPIRY>,
         ...Optional<VERSION>,
@@ -135,8 +127,8 @@ export type ExHIncrBy<TContext extends Context> = Command<
 
 export type ExHIncrByFloat<TContext extends Context> = Command<
     [
-        key: string | Buffer,
-        field: string | Buffer,
+        key: StringType,
+        field: StringType,
         num: number,
         ...Optional<EXPIRY>,
         ...Optional<VERSION>,
@@ -149,75 +141,61 @@ export type ExHIncrByFloat<TContext extends Context> = Command<
 >;
 
 export type ExHGetWithVer<TContext extends Context, TFromat extends Format = 'default'> = Command<
-    [key: string | Buffer, field: string | Buffer],
+    [key: StringType, field: StringType],
     TFromat extends 'buffer' ? [Buffer, number] : [string, number],
     TContext
 >;
 
 export type ExHMGet<TContext extends Context, TFromat extends Format = 'default'> = Command<
-    [key: string | Buffer, field: string | Buffer, ...fields: (string | Buffer)[]],
+    [key: StringType, field: StringType, ...fields: StringType[]],
     TFromat extends 'buffer' ? Buffer[] : string[],
     TContext
 >;
 
 export type ExHMGetWithVer<TContext extends Context, TFromat extends Format = 'default'> = Command<
-    [key: string | Buffer, field: string | Buffer, ...fields: (string | Buffer)[]],
+    [key: StringType, field: StringType, ...fields: StringType[]],
     TFromat extends 'buffer' ? (Buffer | number)[] : (string | number)[],
     TContext
 >;
 
-export type ExHLen<TContext extends Context> = Command<[key: string | Buffer, ...Optional<NOEXP>], number, TContext>;
+export type ExHLen<TContext extends Context> = Command<[key: StringType, ...Optional<NOEXP>], number, TContext>;
 
-export type ExHExists<TContext extends Context> = Command<
-    [key: string | Buffer, field: string | Buffer],
-    number,
-    TContext
->;
+export type ExHExists<TContext extends Context> = Command<[key: StringType, field: StringType], number, TContext>;
 
-export type ExHStrLen<TContext extends Context> = Command<
-    [key: string | Buffer, field: string | Buffer],
-    number,
-    TContext
->;
+export type ExHStrLen<TContext extends Context> = Command<[key: StringType, field: StringType], number, TContext>;
 
 export type ExHKeys<TContext extends Context, TFromat extends Format = 'default'> = Command<
-    [key: string | Buffer],
+    [key: StringType],
     TFromat extends 'buffer' ? Buffer[] : string[],
     TContext
 >;
 
 export type ExHVals<TContext extends Context, TFromat extends Format = 'default'> = Command<
-    [key: string | Buffer],
+    [key: StringType],
     TFromat extends 'buffer' ? Buffer[] : string[],
     TContext
 >;
 
 export type ExHGetAll<TContext extends Context, TFromat extends Format = 'default'> = Command<
-    [key: string | Buffer],
+    [key: StringType],
     TFromat extends 'buffer' ? Buffer[] : string[],
     TContext
 >;
 
 export type ExHScan<TContext extends Context, TFromat extends Format = 'default'> = Command<
-    [
-        key: string | Buffer,
-        op: '>' | '>=' | '<' | '<=' | '==' | '^' | '$',
-        subkey: string,
-        ...Optional<MATCH>,
-        ...Optional<COUNT>,
-    ],
+    [key: StringType, op: OpType, subkey: StringType, ...Optional<MATCH>, ...Optional<COUNT>],
     TFromat extends 'buffer' ? [Buffer, Buffer[]] : [string, string[]],
     TContext
 >;
 
 export type ExHScanUnorder<TContext extends Context, TFromat extends Format = 'default'> = Command<
-    [key: string | Buffer, cursor: number, ...Optional<MATCH>, ...Optional<COUNT>],
+    [key: StringType, cursor: number, ...Optional<MATCH>, ...Optional<COUNT>],
     TFromat extends 'buffer' ? [Buffer, Buffer[]] : [string, string[]],
     TContext
 >;
 
 export type ExHDel<TContext extends Context> = Command<
-    [key: string | Buffer, field: string | Buffer, ...fields: (string | Buffer)[]],
+    [key: StringType, field: StringType, ...fields: StringType[]],
     number,
     TContext
 >;
