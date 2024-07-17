@@ -1,15 +1,15 @@
 import { Redis } from 'ioredis';
-import { bloomCommands } from './tairbloom';
-import { cpcCommands } from './taircpc';
-import { docCommands } from './tairdoc';
-import { gisCommands } from './tairgis';
-import { hashCommands } from './tairhash';
-import { roaringCommands } from './tairroaring';
-import { searchCommands } from './tairsearch';
-import { stringCommands } from './tairstring';
-import { tsCommands } from './tairts';
-import { vectorCommands } from './tairvector';
-import { zsetCommands } from './tairzset';
+import { bloomCommands, BloomCommands } from './tairbloom';
+import { cpcCommands, CpcCommands } from './taircpc';
+import { docCommands, DocCommands } from './tairdoc';
+import { gisCommands, GisCommands } from './tairgis';
+import { hashCommands, HashCommands } from './tairhash';
+import { roaringCommands, RoaringCommands } from './tairroaring';
+import { searchCommands, SearchCommands } from './tairsearch';
+import { stringCommands, StringCommands } from './tairstring';
+import { tsCommands, TsCommands } from './tairts';
+import { vectorCommands, VectorCommands } from './tairvector';
+import { zsetCommands, ZsetCommands } from './tairzset';
 
 export function tair(redis: Redis) {
     const commands = [
@@ -30,6 +30,21 @@ export function tair(redis: Redis) {
         if (!redis.addedBuiltinSet.has(command)) redis.addBuiltinCommand(command);
     }
     return redis;
+}
+
+declare module 'ioredis' {
+    interface RedisCommander<Context>
+        extends BloomCommands<Context>,
+            CpcCommands<Context>,
+            DocCommands<Context>,
+            GisCommands<Context>,
+            HashCommands<Context>,
+            RoaringCommands<Context>,
+            SearchCommands<Context>,
+            StringCommands<Context>,
+            TsCommands<Context>,
+            VectorCommands<Context>,
+            ZsetCommands<Context> {}
 }
 
 export * from './tairbloom';

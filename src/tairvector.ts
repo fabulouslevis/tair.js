@@ -1,4 +1,4 @@
-import { Command, Context, Format } from './types';
+import { Commands, Context, Optional, OkType, StringType, NumberType, MATCH, COUNT } from './types';
 
 export const vectorCommands = [
     'tvs.createindex',
@@ -30,6 +30,49 @@ export const vectorCommands = [
     'tvs.hpexpiretime',
 ];
 
-declare module 'ioredis' {
-    interface RedisCommander<Context> {}
-}
+type AlgorithmType = 'FLAT' | 'HNSW';
+type DistanceMethodType = 'L2' | 'IP' | 'COSINE' | 'JACCARD';
+
+export type VectorCommands<TContext extends Context> = Commands<
+    {
+        'tvs.createindex': {
+            args: [
+                indexName: StringType,
+                dims: number,
+                algorithm: AlgorithmType,
+                distanceMethod: DistanceMethodType,
+                ...algoParamKeyValues: StringType[],
+            ];
+            return: OkType;
+        };
+        'tvs.getindex': {
+            args: [indexName: StringType];
+            return: string[];
+            returnBuffer: Buffer[];
+        };
+        'tvs.delindex': {
+            args: [indexName: StringType];
+            return: number;
+        };
+        'tvs.scanindex': {
+            args: [cursor: number, ...Optional<MATCH>, ...Optional<COUNT>];
+            return: [NumberType, string[]];
+            returnBuffer: [Buffer, Buffer[]];
+        };
+        'tvs.hset': {
+            args: [
+                indexName: StringType,
+                attributeKey: StringType,
+                attributeValue: StringType,
+                ...attributeKeyValues: StringType[],
+            ];
+            return: number;
+        };
+        'tvs.hgetall': {
+            args: [indexName: StringType, key: StringType];
+            return: string[];
+            returnBuffer: Buffer[];
+        };
+    },
+    TContext
+>;

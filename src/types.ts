@@ -1,7 +1,5 @@
 import { ClientContext, Result, Callback } from 'ioredis';
 
-export type Format = 'default' | 'buffer';
-
 export type Optional<TArgs extends any[]> = TArgs | [];
 
 export type Shift<TArgs extends any[]> = TArgs extends [any, ...infer TOtherArgs] ? TOtherArgs : TArgs;
@@ -10,9 +8,79 @@ export type Pop<TArgs extends any[]> = TArgs extends [...infer TOtherArgs, any] 
 
 export type Context = ClientContext;
 
+export type CommandDefine = {
+    args: any[];
+    return: any;
+};
+
+export type BufferCommandDefine = {
+    args: any[];
+    returnBuffer: any;
+};
+
+export type PickCommandDefine<
+    TCommandDefine,
+    TCommandDefineTarget extends CommandDefine | BufferCommandDefine,
+> = TCommandDefineTarget extends CommandDefine
+    ? TCommandDefine extends CommandDefine
+        ? TCommandDefine
+        : never
+    : TCommandDefineTarget extends BufferCommandDefine
+      ? TCommandDefine extends BufferCommandDefine
+          ? {
+                args: TCommandDefine['args'];
+                return: TCommandDefine['returnBuffer'];
+            }
+          : never
+      : never;
+
+export type PickCommandDefineTuple<
+    TCommandDefineTuple extends any[],
+    TCommandDefineTarget extends CommandDefine | BufferCommandDefine,
+> = TCommandDefineTuple extends [infer TFirstCommandDefine, ...infer TOtherCommandDefines]
+    ? [TFirstCommandDefine] extends [TCommandDefineTarget]
+        ? [
+              PickCommandDefine<TFirstCommandDefine, TCommandDefineTarget>,
+              ...PickCommandDefineTuple<TOtherCommandDefines, TCommandDefineTarget>,
+          ]
+        : PickCommandDefineTuple<TOtherCommandDefines, TCommandDefineTarget>
+    : [];
+
 export type Command<TArgs extends any[], TReturn, TContext extends Context> = (
     ...args: [...TArgs, ...Optional<[callback: Callback<TReturn>]>]
 ) => Result<TReturn, TContext>;
+
+export type AssembleCommand<TCommandDefine, TContext extends Context> = TCommandDefine extends CommandDefine
+    ? Command<TCommandDefine['args'], TCommandDefine['return'], TContext>
+    : never;
+
+export type AssembleCommandTuple<TCommandDefineTuple, TContext extends Context> = TCommandDefineTuple extends [
+    infer TOneCommandDefine,
+]
+    ? AssembleCommand<TOneCommandDefine, TContext>
+    : TCommandDefineTuple extends [infer TOneCommandDefine, ...infer TOtherCommandDefines]
+      ? AssembleCommand<TOneCommandDefine, TContext> & AssembleCommandTuple<TOtherCommandDefines, TContext>
+      : never;
+
+type OmitNever<T> = { [K in keyof T as T[K] extends never ? never : K]: T[K] };
+
+export type Commands<
+    TCommandDefines extends Record<
+        string,
+        CommandDefine | BufferCommandDefine | (CommandDefine | BufferCommandDefine)[]
+    >,
+    TContext extends Context,
+> = OmitNever<
+    {
+        [method in keyof TCommandDefines]: TCommandDefines[method] extends any[]
+            ? AssembleCommandTuple<PickCommandDefineTuple<TCommandDefines[method], CommandDefine>, TContext>
+            : AssembleCommand<PickCommandDefine<TCommandDefines[method], CommandDefine>, TContext>;
+    } & {
+        [method in keyof TCommandDefines & string as `${method}Buffer`]: TCommandDefines[method] extends any[]
+            ? AssembleCommandTuple<PickCommandDefineTuple<TCommandDefines[method], BufferCommandDefine>, TContext>
+            : AssembleCommand<PickCommandDefine<TCommandDefines[method], BufferCommandDefine>, TContext>;
+    }
+>;
 
 export type StringType = string | Buffer;
 

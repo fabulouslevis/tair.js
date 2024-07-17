@@ -1,4 +1,4 @@
-import { Command, Context, Optional, StringType, OkType, NumberType, EXPIRY, SIZE, WIN } from './types';
+import { Commands, Context, Optional, StringType, OkType, NumberType, EXPIRY, SIZE, WIN } from './types';
 
 export const cpcCommands = [
     'cpc.estimate',
@@ -13,82 +13,69 @@ export const cpcCommands = [
     'cpc.array.estimate.range.merge',
 ];
 
-export type CpcEstimate<TContext extends Context> = Command<[key: StringType], NumberType, TContext>;
-
-export type CpcUpdate<TContext extends Context> = Command<
-    [key: StringType, item: StringType, ...Optional<EXPIRY>],
-    OkType,
+export type CpcCommands<TContext extends Context> = Commands<
+    {
+        'cpc.estimate': {
+            args: [key: StringType];
+            return: NumberType;
+        };
+        'cpc.update': {
+            args: [key: StringType, item: StringType, ...Optional<EXPIRY>];
+            return: OkType;
+        };
+        'cpc.update2est': {
+            args: [key: StringType, item: StringType, ...Optional<EXPIRY>];
+            return: NumberType;
+        };
+        'cpc.update2jud': {
+            args: [key: StringType, item: StringType, ...Optional<EXPIRY>];
+            return: [NumberType, NumberType];
+        };
+        'cpc.array.estimate': {
+            args: [key: StringType, timestamp: number];
+            return: NumberType;
+        };
+        'cpc.array.update': {
+            args: [
+                key: StringType,
+                timestamp: number,
+                item: StringType,
+                ...Optional<EXPIRY>,
+                ...Optional<SIZE>,
+                ...Optional<WIN>,
+            ];
+            return: OkType;
+        };
+        'cpc.array.update2est': {
+            args: [
+                key: StringType,
+                timestamp: number,
+                item: StringType,
+                ...Optional<EXPIRY>,
+                ...Optional<SIZE>,
+                ...Optional<WIN>,
+            ];
+            return: NumberType;
+        };
+        'cpc.array.update2jud': {
+            args: [
+                key: StringType,
+                timestamp: number,
+                item: StringType,
+                ...Optional<EXPIRY>,
+                ...Optional<SIZE>,
+                ...Optional<WIN>,
+            ];
+            return: [NumberType, NumberType];
+        };
+        'cpc.array.estimate.range': {
+            args: [key: StringType, startTime: number, endTime: number];
+            return: NumberType[];
+        };
+        'cpc.array.estimate.range.merge': {
+            args: [key: StringType, timestamp: number, range: number];
+            return: NumberType;
+        };
+    },
     TContext
 >;
-
-export type CpcUpdate2Est<TContext extends Context> = Command<
-    [key: StringType, item: StringType, ...Optional<EXPIRY>],
-    NumberType,
-    TContext
->;
-
-export type CpcUpdate2Jud<TContext extends Context> = Command<
-    [key: StringType, item: StringType, ...Optional<EXPIRY>],
-    [NumberType, NumberType],
-    TContext
->;
-
-export type CpcArrayEstimate<TContext extends Context> = Command<
-    [key: StringType, timestamp: number],
-    NumberType,
-    TContext
->;
-
-export type CpcArrayUpdate<TContext extends Context> = Command<
-    [key: StringType, timestamp: number, item: StringType, ...Optional<EXPIRY>, ...Optional<SIZE>, ...Optional<WIN>],
-    OkType,
-    TContext
->;
-
-export type CpcArrayUpdate2Est<TContext extends Context> = Command<
-    [key: StringType, timestamp: number, item: StringType, ...Optional<EXPIRY>, ...Optional<SIZE>, ...Optional<WIN>],
-    NumberType,
-    TContext
->;
-
-export type CpcArrayUpdate2Jud<TContext extends Context> = Command<
-    [key: StringType, timestamp: number, item: StringType, ...Optional<EXPIRY>, ...Optional<SIZE>, ...Optional<WIN>],
-    [NumberType, NumberType],
-    TContext
->;
-
-export type CpcArrayEstimateRange<TContext extends Context> = Command<
-    [key: StringType, startTime: number, endTime: number],
-    NumberType[],
-    TContext
->;
-
-export type CpcArrayEstimateRangeMerge<TContext extends Context> = Command<
-    [key: StringType, timestamp: number, range: number],
-    NumberType,
-    TContext
->;
-
-declare module 'ioredis' {
-    interface RedisCommander<Context> {
-        ['cpc.estimate']: CpcEstimate<Context>;
-
-        ['cpc.update']: CpcUpdate<Context>;
-
-        ['cpc.update2est']: CpcUpdate2Est<Context>;
-
-        ['cpc.update2jud']: CpcUpdate2Jud<Context>;
-
-        ['cpc.array.estimate']: CpcArrayEstimate<Context>;
-
-        ['cpc.array.update']: CpcArrayUpdate<Context>;
-
-        ['cpc.array.update2est']: CpcArrayUpdate2Est<Context>;
-
-        ['cpc.array.update2jud']: CpcArrayUpdate2Jud<Context>;
-
-        ['cpc.array.estimate.range']: CpcArrayEstimateRange<Context>;
-
-        ['cpc.array.estimate.range.merge']: CpcArrayEstimateRangeMerge<Context>;
-    }
-}
