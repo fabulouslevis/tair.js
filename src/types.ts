@@ -16,7 +16,7 @@ export type Command<TArgs extends any[], TReturn, TContext extends Context> = (
 
 export type StringType = string | Buffer;
 
-export type NumberType = string;
+export type NumberType = `${number}`;
 
 export type BitType = 0 | 1;
 
