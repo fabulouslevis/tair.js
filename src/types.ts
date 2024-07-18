@@ -8,7 +8,7 @@ export type Pop<TArgs extends any[]> = TArgs extends [...infer TOtherArgs, any] 
 
 export type Context = ClientContext;
 
-export type CommandDefine = {
+export type DefaultCommandDefine = {
     args: any[];
     return: any;
 };
@@ -18,67 +18,80 @@ export type BufferCommandDefine = {
     returnBuffer: any;
 };
 
-export type PickCommandDefine<
-    TCommandDefine,
-    TCommandDefineTarget extends CommandDefine | BufferCommandDefine,
-> = TCommandDefineTarget extends CommandDefine
-    ? TCommandDefine extends CommandDefine
-        ? TCommandDefine
+export type CommandDefine = DefaultCommandDefine | BufferCommandDefine;
+
+export type CommandMeta = [any[], any];
+
+export type BuildMatch = 'default' | 'buffer';
+
+export type BuildCommandMeta<
+    TCommandDefine extends CommandDefine,
+    TBuildMatch extends BuildMatch,
+> = TBuildMatch extends 'default'
+    ? TCommandDefine extends DefaultCommandDefine
+        ? [TCommandDefine['args'], TCommandDefine['return']]
         : never
-    : TCommandDefineTarget extends BufferCommandDefine
+    : TBuildMatch extends 'buffer'
       ? TCommandDefine extends BufferCommandDefine
-          ? {
-                args: TCommandDefine['args'];
-                return: TCommandDefine['returnBuffer'];
-            }
+          ? [TCommandDefine['args'], TCommandDefine['returnBuffer']]
           : never
       : never;
 
-export type PickCommandDefineTuple<
-    TCommandDefineTuple extends any[],
-    TCommandDefineTarget extends CommandDefine | BufferCommandDefine,
-> = TCommandDefineTuple extends [infer TFirstCommandDefine, ...infer TOtherCommandDefines]
-    ? [TFirstCommandDefine] extends [TCommandDefineTarget]
-        ? [
-              PickCommandDefine<TFirstCommandDefine, TCommandDefineTarget>,
-              ...PickCommandDefineTuple<TOtherCommandDefines, TCommandDefineTarget>,
+export type BuildCommandMetaTuple<
+    TCommandDefineTuple extends CommandDefine[],
+    TBuildMatch extends BuildMatch,
+> = TCommandDefineTuple extends [CommandDefine, ...infer TOtherCommandDefineTuple]
+    ? BuildCommandMeta<TCommandDefineTuple[0], TBuildMatch> extends never
+        ? TOtherCommandDefineTuple extends CommandDefine[]
+            ? BuildCommandMetaTuple<TOtherCommandDefineTuple, TBuildMatch>
+            : []
+        : [
+              BuildCommandMeta<TCommandDefineTuple[0], TBuildMatch>,
+              ...(TOtherCommandDefineTuple extends CommandDefine[]
+                  ? BuildCommandMetaTuple<TOtherCommandDefineTuple, TBuildMatch>
+                  : []),
           ]
-        : PickCommandDefineTuple<TOtherCommandDefines, TCommandDefineTarget>
     : [];
 
-export type Command<TArgs extends any[], TReturn, TContext extends Context> = (
-    ...args: [...TArgs, ...Optional<[callback: Callback<TReturn>]>]
-) => Result<TReturn, TContext>;
+export type BuildCommand<TCommandMeta extends CommandMeta, TContext extends Context> = (
+    ...args: [...TCommandMeta[0], ...Optional<[callback: Callback<TCommandMeta[1]>]>]
+) => Result<TCommandMeta[1], TContext>;
 
-export type AssembleCommand<TCommandDefine, TContext extends Context> = TCommandDefine extends CommandDefine
-    ? Command<TCommandDefine['args'], TCommandDefine['return'], TContext>
+export type BuildCommandTuple<
+    TCommandMetaTuple extends CommandMeta[],
+    TContext extends Context,
+> = TCommandMetaTuple extends [CommandMeta, ...infer TOtherCommandMetaTuple]
+    ? TOtherCommandMetaTuple extends [CommandMeta, ...CommandMeta[]]
+        ? BuildCommand<TCommandMetaTuple[0], TContext> & BuildCommandTuple<TOtherCommandMetaTuple, TContext>
+        : BuildCommand<TCommandMetaTuple[0], TContext>
     : never;
-
-export type AssembleCommandTuple<TCommandDefineTuple, TContext extends Context> = TCommandDefineTuple extends [
-    infer TOneCommandDefine,
-]
-    ? AssembleCommand<TOneCommandDefine, TContext>
-    : TCommandDefineTuple extends [infer TOneCommandDefine, ...infer TOtherCommandDefines]
-      ? AssembleCommand<TOneCommandDefine, TContext> & AssembleCommandTuple<TOtherCommandDefines, TContext>
-      : never;
 
 type OmitNever<T> = { [K in keyof T as T[K] extends never ? never : K]: T[K] };
 
+export type Command<
+    TCommandDefineValue extends CommandDefine | CommandDefine[],
+    TBuildMatch extends BuildMatch,
+    TContext extends Context,
+> = TCommandDefineValue extends CommandDefine[]
+    ? BuildCommandTuple<BuildCommandMetaTuple<TCommandDefineValue, TBuildMatch>, TContext>
+    : TCommandDefineValue extends CommandDefine
+      ? BuildCommandMeta<TCommandDefineValue, TBuildMatch> extends never
+          ? never
+          : BuildCommand<BuildCommandMeta<TCommandDefineValue, TBuildMatch>, TContext>
+      : never;
+
 export type Commands<
-    TCommandDefines extends Record<
-        string,
-        CommandDefine | BufferCommandDefine | (CommandDefine | BufferCommandDefine)[]
-    >,
+    TCommandDefineValues extends Record<string, CommandDefine | CommandDefine[]>,
     TContext extends Context,
 > = OmitNever<
     {
-        [method in keyof TCommandDefines]: TCommandDefines[method] extends any[]
-            ? AssembleCommandTuple<PickCommandDefineTuple<TCommandDefines[method], CommandDefine>, TContext>
-            : AssembleCommand<PickCommandDefine<TCommandDefines[method], CommandDefine>, TContext>;
+        [method in keyof TCommandDefineValues]: Command<TCommandDefineValues[method], 'default', TContext>;
     } & {
-        [method in keyof TCommandDefines & string as `${method}Buffer`]: TCommandDefines[method] extends any[]
-            ? AssembleCommandTuple<PickCommandDefineTuple<TCommandDefines[method], BufferCommandDefine>, TContext>
-            : AssembleCommand<PickCommandDefine<TCommandDefines[method], BufferCommandDefine>, TContext>;
+        [method in keyof TCommandDefineValues & string as `${method}Buffer`]: Command<
+            TCommandDefineValues[method],
+            'buffer',
+            TContext
+        >;
     }
 >;
 

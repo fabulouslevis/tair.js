@@ -73,6 +73,11 @@ export type VectorCommands<TContext extends Context> = Commands<
             return: string[];
             returnBuffer: Buffer[];
         };
+        'tvs.hmget': {
+            args: [indexName: StringType, key: StringType, attributeKey: StringType, ...attributeKeys: StringType[]];
+            return: string[];
+            returnBuffer: Buffer[];
+        };
     },
     TContext
 >;
