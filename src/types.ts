@@ -178,6 +178,12 @@ export type LABELS = ['LABELS', label: StringType, val: StringType, ...labelVals
 
 export type MAXCOUNT = ['MAXCOUNT', count: number];
 
+export type VECTOR = ['VECTOR', vector: StringType];
+
+export type MAX_DIST = ['MAX_DIST', maxDistance: number];
+
+export type TOPN = ['TOPN', topN: number];
+
 export type AGGREGATION = [
     'AGGREGATION',
     aggregationType:
