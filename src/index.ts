@@ -1,4 +1,4 @@
-import { Redis } from 'ioredis';
+import { Redis, Cluster } from 'ioredis';
 import { bloomCommands, BloomCommands } from './tairbloom';
 import { cpcCommands, CpcCommands } from './taircpc';
 import { docCommands, DocCommands } from './tairdoc';
@@ -11,7 +11,7 @@ import { tsCommands, TsCommands } from './tairts';
 import { vectorCommands, VectorCommands } from './tairvector';
 import { zsetCommands, ZsetCommands } from './tairzset';
 
-export function tair(redis: Redis) {
+export function tair<TClient extends Redis | Cluster>(client: TClient) {
     const commands = [
         ...bloomCommands,
         ...cpcCommands,
@@ -25,11 +25,10 @@ export function tair(redis: Redis) {
         ...vectorCommands,
         ...zsetCommands,
     ];
-
     for (const command of commands) {
-        if (!redis.addedBuiltinSet.has(command)) redis.addBuiltinCommand(command);
+        if (!client.addedBuiltinSet.has(command)) client.addBuiltinCommand(command);
     }
-    return redis;
+    return client;
 }
 
 declare module 'ioredis' {

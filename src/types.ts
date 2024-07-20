@@ -8,8 +8,6 @@ export type Pop<TArgs extends any[]> = TArgs extends [...infer TOtherArgs, any] 
 
 export type Context = ClientContext;
 
-export type CommandMeta = [any[], any];
-
 export type CommandType = 'default' | 'buffer';
 
 export type CommandTypeTuple = ['default', 'buffer'];
@@ -29,6 +27,8 @@ export type CommandReturnDefine<TCommandType extends CommandType> = Record<
 
 export type CommandDefine = CommandArgsDefine & Partial<CommandReturnDefine<CommandType>>;
 
+export type CommandMeta = [any[], any];
+
 export type BuildCommandMeta<
     TCommandDefine extends CommandDefine,
     TCommandType extends CommandType,
@@ -37,73 +37,65 @@ export type BuildCommandMeta<
     : never;
 
 export type BuildCommandMetaTuple<
-    TCommandDefineTuple extends CommandDefine[],
+    TCommandDefineValue extends CommandDefine | CommandDefine[],
     TCommandType extends CommandType,
-> = TCommandDefineTuple extends [CommandDefine, ...infer TOtherCommandDefineTuple]
-    ? BuildCommandMeta<TCommandDefineTuple[0], TCommandType> extends never
-        ? TOtherCommandDefineTuple extends CommandDefine[]
-            ? BuildCommandMetaTuple<TOtherCommandDefineTuple, TCommandType>
-            : []
-        : [
-              BuildCommandMeta<TCommandDefineTuple[0], TCommandType>,
-              ...(TOtherCommandDefineTuple extends CommandDefine[]
-                  ? BuildCommandMetaTuple<TOtherCommandDefineTuple, TCommandType>
-                  : []),
-          ]
-    : [];
+> = TCommandDefineValue extends CommandDefine
+    ? BuildCommandMeta<TCommandDefineValue, TCommandType> extends never
+        ? []
+        : [BuildCommandMeta<TCommandDefineValue, TCommandType>]
+    : TCommandDefineValue extends [CommandDefine, ...infer TCommandDefineTuple]
+      ? [
+            ...BuildCommandMetaTuple<TCommandDefineValue[0], TCommandType>,
+            ...(TCommandDefineTuple extends CommandDefine[]
+                ? BuildCommandMetaTuple<TCommandDefineTuple, TCommandType>
+                : []),
+        ]
+      : [];
 
 export type BuildCommand<TCommandMeta extends CommandMeta, TContext extends Context> = (
     ...args: [...TCommandMeta[0], ...Optional<[callback: Callback<TCommandMeta[1]>]>]
 ) => Result<TCommandMeta[1], TContext>;
 
-export type BuildCommandTuple<
+export type BuildCommandCombine<
     TCommandMetaTuple extends CommandMeta[],
     TContext extends Context,
 > = TCommandMetaTuple extends [CommandMeta, ...infer TOtherCommandMetaTuple]
     ? TOtherCommandMetaTuple extends [CommandMeta, ...CommandMeta[]]
-        ? BuildCommand<TCommandMetaTuple[0], TContext> & BuildCommandTuple<TOtherCommandMetaTuple, TContext>
+        ? BuildCommand<TCommandMetaTuple[0], TContext> & BuildCommandCombine<TOtherCommandMetaTuple, TContext>
         : BuildCommand<TCommandMetaTuple[0], TContext>
     : never;
 
-export type Command<
-    TCommandDefineValue extends CommandDefine | CommandDefine[],
-    TCommandType extends CommandType,
-    TContext extends Context,
-> = TCommandDefineValue extends CommandDefine[]
-    ? BuildCommandTuple<BuildCommandMetaTuple<TCommandDefineValue, TCommandType>, TContext>
-    : TCommandDefineValue extends CommandDefine
-      ? BuildCommandTuple<BuildCommandMetaTuple<[TCommandDefineValue], TCommandType>, TContext>
-      : never;
-
-export type CommandRecord<
+export type AssembleCommands<
     TCommandDefineValueRecord extends Record<string, CommandDefine | CommandDefine[]>,
     TCommandType extends CommandType,
     TContext extends Context,
 > = {
-    [method in keyof TCommandDefineValueRecord & string as Command<
-        TCommandDefineValueRecord[method],
-        TCommandType,
+    [method in keyof TCommandDefineValueRecord & string as BuildCommandCombine<
+        BuildCommandMetaTuple<TCommandDefineValueRecord[method], TCommandType>,
         TContext
     > extends never
         ? never
-        : MarkCommandType<method, TCommandType>]: Command<TCommandDefineValueRecord[method], TCommandType, TContext>;
+        : MarkCommandType<method, TCommandType>]: BuildCommandCombine<
+        BuildCommandMetaTuple<TCommandDefineValueRecord[method], TCommandType>,
+        TContext
+    >;
 };
 
-export type CommandRecordTuple<
+export type AssembleCommandsCombine<
     TCommandDefineValueRecord extends Record<string, CommandDefine | CommandDefine[]>,
     TCommandTypeTuple extends CommandType[],
     TContext extends Context,
 > = TCommandTypeTuple extends [CommandType, ...infer TOtherCommandTypeTuple]
     ? TOtherCommandTypeTuple extends [CommandType, ...CommandType[]]
-        ? CommandRecord<TCommandDefineValueRecord, TCommandTypeTuple[0], TContext> &
-              CommandRecordTuple<TCommandDefineValueRecord, TOtherCommandTypeTuple, TContext>
-        : CommandRecord<TCommandDefineValueRecord, TCommandTypeTuple[0], TContext>
+        ? AssembleCommands<TCommandDefineValueRecord, TCommandTypeTuple[0], TContext> &
+              AssembleCommandsCombine<TCommandDefineValueRecord, TOtherCommandTypeTuple, TContext>
+        : AssembleCommands<TCommandDefineValueRecord, TCommandTypeTuple[0], TContext>
     : never;
 
 export type Commands<
     TCommandDefineValueRecord extends Record<string, CommandDefine | CommandDefine[]>,
     TContext extends Context,
-> = CommandRecordTuple<TCommandDefineValueRecord, CommandTypeTuple, TContext>;
+> = AssembleCommandsCombine<TCommandDefineValueRecord, CommandTypeTuple, TContext>;
 
 export type StringType = string | Buffer;
 
