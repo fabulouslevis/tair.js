@@ -66,8 +66,8 @@ export type BuildCommandCombine<
     : never;
 
 export type AssembleCommands<
-    TCommandDefineValueRecord extends Record<string, CommandDefine | CommandDefine[]>,
     TCommandType extends CommandType,
+    TCommandDefineValueRecord extends Record<string, CommandDefine | CommandDefine[]>,
     TContext extends Context,
 > = {
     [method in keyof TCommandDefineValueRecord & string as BuildCommandCombine<
@@ -82,20 +82,20 @@ export type AssembleCommands<
 };
 
 export type AssembleCommandsCombine<
-    TCommandDefineValueRecord extends Record<string, CommandDefine | CommandDefine[]>,
     TCommandTypeTuple extends CommandType[],
+    TCommandDefineValueRecord extends Record<string, CommandDefine | CommandDefine[]>,
     TContext extends Context,
 > = TCommandTypeTuple extends [CommandType, ...infer TOtherCommandTypeTuple]
     ? TOtherCommandTypeTuple extends [CommandType, ...CommandType[]]
-        ? AssembleCommands<TCommandDefineValueRecord, TCommandTypeTuple[0], TContext> &
-              AssembleCommandsCombine<TCommandDefineValueRecord, TOtherCommandTypeTuple, TContext>
-        : AssembleCommands<TCommandDefineValueRecord, TCommandTypeTuple[0], TContext>
+        ? AssembleCommands<TCommandTypeTuple[0], TCommandDefineValueRecord, TContext> &
+              AssembleCommandsCombine<TOtherCommandTypeTuple, TCommandDefineValueRecord, TContext>
+        : AssembleCommands<TCommandTypeTuple[0], TCommandDefineValueRecord, TContext>
     : never;
 
 export type Commands<
     TCommandDefineValueRecord extends Record<string, CommandDefine | CommandDefine[]>,
     TContext extends Context,
-> = AssembleCommandsCombine<TCommandDefineValueRecord, CommandTypeTuple, TContext>;
+> = AssembleCommandsCombine<CommandTypeTuple, TCommandDefineValueRecord, TContext>;
 
 export type StringType = string | Buffer;
 
