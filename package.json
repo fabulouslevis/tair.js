@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "npm run build && ./node_modules/.bin/mocha",
-    "build": "rm -rf built && tsc"
+    "build": "rm -rf lib && tsc"
   },
   "author": "Tony Tong",
   "repository": {
