@@ -1,5 +1,5 @@
 {
-  "name": "tairjs",
+  "name": "tair.js",
   "version": "1.0.0",
   "description": "Tair Nodejs Sdk",
   "main": "lib/index.js",
@@ -10,7 +10,7 @@
   "author": "Tony Tong",
   "repository": {
     "type": "git",
-    "url": "https://github.com/fabulouslevis/tairjs.git"
+    "url": "https://github.com/fabulouslevis/tair.js.git"
   },
   "license": "ISC",
   "peerDependencies": {

@@ -1,4 +1,4 @@
-# tairjs
+# tair.js
 
 A client packaged based on [ioredis](https://github.com/redis/ioredis) that operates [Tair](https://www.alibabacloud.com/help/en/apsaradb-for-redis/latest/apsaradb-for-redis-enhanced-edition-overview) For Redis Modules.
 
@@ -17,14 +17,14 @@ A client packaged based on [ioredis](https://github.com/redis/ioredis) that oper
 # Installation
 
 ```
-npm i tairjs
+npm i tair.js
 ```
 
 # Quickstart
 
 ```
 const { Redis } = require('ioredis');
-const { tair } = require('tairjs');
+const { tair } = require('tair.js');
 const redis = tair(new Redis(...options));
 redis['gis.get'](key);
 redis['json.get'](key);
