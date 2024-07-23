@@ -1,5 +1,7 @@
-./*
-!LICENSE
-!package.json
-!README.md
-!./lib/*
+.github
+src
+test
+.eslintrc.js
+.nvmrc
+.prettierrc
+tsconfig.json
