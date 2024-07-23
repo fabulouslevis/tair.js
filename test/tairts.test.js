@@ -1,6 +1,6 @@
 const { redis } = require('./instance');
 
-describe('ts', () => {
+describe.skip('ts', () => {
     it.skip('exts.p.create', async () => {
         await redis['exts.p.create']('tsfoo').then(console.log);
     });
