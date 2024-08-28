@@ -41,16 +41,16 @@ export type BuildCommandMetaTuple<
     TCommandType extends CommandType,
 > = TCommandDefineValue extends CommandDefine
     ? BuildCommandMeta<TCommandDefineValue, TCommandType> extends never
-        ? []
-        : [BuildCommandMeta<TCommandDefineValue, TCommandType>]
+    ? []
+    : [BuildCommandMeta<TCommandDefineValue, TCommandType>]
     : TCommandDefineValue extends [CommandDefine, ...infer TCommandDefineTuple]
-      ? [
-            ...BuildCommandMetaTuple<TCommandDefineValue[0], TCommandType>,
-            ...(TCommandDefineTuple extends CommandDefine[]
-                ? BuildCommandMetaTuple<TCommandDefineTuple, TCommandType>
-                : []),
-        ]
-      : [];
+    ? [
+        ...BuildCommandMetaTuple<TCommandDefineValue[0], TCommandType>,
+        ...(TCommandDefineTuple extends CommandDefine[]
+            ? BuildCommandMetaTuple<TCommandDefineTuple, TCommandType>
+            : []),
+    ]
+    : [];
 
 export type BuildCommand<TCommandMeta extends CommandMeta, TContext extends Context> = (
     ...args: [...TCommandMeta[0], ...Optional<[callback: Callback<TCommandMeta[1]>]>]
@@ -61,8 +61,8 @@ export type BuildCommandCombine<
     TContext extends Context,
 > = TCommandMetaTuple extends [CommandMeta, ...infer TOtherCommandMetaTuple]
     ? TOtherCommandMetaTuple extends [CommandMeta, ...CommandMeta[]]
-        ? BuildCommand<TCommandMetaTuple[0], TContext> & BuildCommandCombine<TOtherCommandMetaTuple, TContext>
-        : BuildCommand<TCommandMetaTuple[0], TContext>
+    ? BuildCommand<TCommandMetaTuple[0], TContext> & BuildCommandCombine<TOtherCommandMetaTuple, TContext>
+    : BuildCommand<TCommandMetaTuple[0], TContext>
     : never;
 
 export type AssembleCommands<
@@ -70,16 +70,16 @@ export type AssembleCommands<
     TCommandDefineValueRecord extends Record<string, CommandDefine | CommandDefine[]>,
     TContext extends Context,
 > = {
-    [method in keyof TCommandDefineValueRecord & string as BuildCommandCombine<
-        BuildCommandMetaTuple<TCommandDefineValueRecord[method], TCommandType>,
-        TContext
-    > extends never
+        [method in keyof TCommandDefineValueRecord & string as BuildCommandCombine<
+            BuildCommandMetaTuple<TCommandDefineValueRecord[method], TCommandType>,
+            TContext
+        > extends never
         ? never
         : MarkCommandType<method, TCommandType>]: BuildCommandCombine<
-        BuildCommandMetaTuple<TCommandDefineValueRecord[method], TCommandType>,
-        TContext
-    >;
-};
+            BuildCommandMetaTuple<TCommandDefineValueRecord[method], TCommandType>,
+            TContext
+        >;
+    };
 
 export type AssembleCommandsCombine<
     TCommandTypeTuple extends CommandType[],
@@ -87,9 +87,9 @@ export type AssembleCommandsCombine<
     TContext extends Context,
 > = TCommandTypeTuple extends [CommandType, ...infer TOtherCommandTypeTuple]
     ? TOtherCommandTypeTuple extends [CommandType, ...CommandType[]]
-        ? AssembleCommands<TCommandTypeTuple[0], TCommandDefineValueRecord, TContext> &
-              AssembleCommandsCombine<TOtherCommandTypeTuple, TCommandDefineValueRecord, TContext>
-        : AssembleCommands<TCommandTypeTuple[0], TCommandDefineValueRecord, TContext>
+    ? AssembleCommands<TCommandTypeTuple[0], TCommandDefineValueRecord, TContext> &
+    AssembleCommandsCombine<TOtherCommandTypeTuple, TCommandDefineValueRecord, TContext>
+    : AssembleCommands<TCommandTypeTuple[0], TCommandDefineValueRecord, TContext>
     : never;
 
 export type Commands<
@@ -105,105 +105,111 @@ export type BitType = 0 | 1;
 
 export type OkType = 'OK';
 
-export type CAPACITY = ['CAPACITY', capacity: number];
+export type CAPACITY = [capacityToken: 'CAPACITY', capacity: number];
 
-export type ERROR = ['ERROR', errorRate: number];
+export type ERROR = [errorToken: 'ERROR', errorRate: number];
 
-export type NOCREATE = ['NOCREATE'];
+export type NOCREATE = [nocreateToken: 'NOCREATE'];
 
-export type SIZE = ['SIZE', size: number];
+export type SIZE = [sizeToken: 'SIZE', size: number];
 
-export type WIN = ['WIN', windowLength: number];
+export type WIN = [winToken: 'WIN', windowLength: number];
 
-export type FORMAT = ['FORMAT', 'XML' | 'YAML'];
+export type FORMAT = [formatToken: 'FORMAT', format: 'XML' | 'YAML'];
 
-export type ROOTNAME = ['ROOTNAME', root: StringType];
+export type ROOTNAME = [rootnameToken: 'ROOTNAME', root: StringType];
 
-export type ARRNAME = ['ARRNAME', arr: StringType];
+export type ARRNAME = [arrnameToken: 'ARRNAME', arr: StringType];
 
-export type WITHOUTWKT = ['WITHOUTWKT'];
+export type WITHOUTWKT = [withoutwktToken: 'WITHOUTWKT'];
 
-export type WITHDIST = ['WITHDIST'];
+export type WITHDIST = [withdistToken: 'WITHDIST'];
 
-export type GEOM = ['GEOM', geom: StringType];
+export type GEOM = [geomToken: 'GEOM', geom: StringType];
 
-export type COUNT = ['COUNT', count: number];
+export type COUNT = [countToken: 'COUNT', count: number];
 
-export type RADIUS = ['RADIUS', longitude: number, latitude: number, distance: number, unit: 'M' | 'KM' | 'FT' | 'MI'];
+export type RADIUS = [
+    radiusToken: 'RADIUS',
+    longitude: number,
+    latitude: number,
+    distance: number,
+    unit: 'M' | 'KM' | 'FT' | 'MI',
+];
 
-export type MEMBER = ['MEMBER', field: StringType, distance: number, unit: 'M' | 'KM' | 'FT' | 'MI'];
+export type MEMBER = [memberToken: 'MEMBER', field: StringType, distance: number, unit: 'M' | 'KM' | 'FT' | 'MI'];
 
-export type KEEPTTL = ['KEEPTTL'];
+export type KEEPTTL = [keepttlToken: 'KEEPTTL'];
 
-export type MIN = ['MIN', minval: number];
+export type MIN = [minToken: 'MIN', minval: number];
 
-export type MAX = ['MAX', maxval: number];
+export type MAX = [maxToken: 'MAX', maxval: number];
 
-export type ITEMS = ['ITEMS', item: StringType, ...items: StringType[]];
+export type ITEMS = [itemsToken: 'ITEMS', item: StringType, ...items: StringType[]];
 
-export type NOEXP = ['NOEXP'];
+export type NOEXP = [noexpToken: 'NOEXP'];
 
-export type MATCH = ['MATCH', pattern: StringType];
+export type MATCH = [matchToken: 'MATCH', pattern: StringType];
 
-export type CH = ['CH'];
+export type CH = [chToken: 'CH'];
 
-export type INCR = ['INCR'];
+export type INCR = [incrToken: 'INCR'];
 
-export type WITHSCORES = ['WITHSCORES'];
+export type WITHSCORES = [withscoresToken: 'WITHSCORES'];
 
-export type LIMIT = ['LIMIT', offset: number, count: number];
+export type LIMIT = [limitToken: 'LIMIT', offset: number, count: number];
 
-export type WITH_ID = ['WITH_ID', docId: StringType];
+export type WITH_ID = [withIdToken: 'WITH_ID', docId: StringType];
 
-export type INDEX = ['INDEX', indexName: StringType];
+export type INDEX = [indexToken: 'INDEX', indexName: StringType];
 
-export type SHOW_TIME = ['SHOW_TIME'];
+export type SHOW_TIME = [showTimeToken: 'SHOW_TIME'];
 
-export type MAX_COUNT = ['MAX_COUNT', count: number];
+export type MAX_COUNT = [maxCountToken: 'MAX_COUNT', count: number];
 
-export type FUZZY = ['FUZZY'];
+export type FUZZY = [fuzzyToken: 'FUZZY'];
 
-export type JSON = ['JSON'];
+export type JSON = [jsonToken: 'JSON'];
 
-export type DATA_ET = ['DATA_ET', time: number];
+export type DATA_ET = [dataEtToken: 'DATA_ET', time: number];
 
-export type CHUNK_SIZE = ['CHUNK_SIZE', size: number];
+export type CHUNK_SIZE = [chunkSizeToken: 'CHUNK_SIZE', size: number];
 
-export type UNCOMPRESSED = ['UNCOMPRESSED'];
+export type UNCOMPRESSED = [uncompressedToken: 'UNCOMPRESSED'];
 
-export type LABELS = ['LABELS', label: StringType, val: StringType, ...labelVals: StringType[]];
+export type LABELS = [labelsToken: 'LABELS', label: StringType, val: StringType, ...labelVals: StringType[]];
 
-export type MAXCOUNT = ['MAXCOUNT', count: number];
+export type MAXCOUNT = [maxcountToken: 'MAXCOUNT', count: number];
 
-export type VECTOR = ['VECTOR', vector: StringType];
+export type VECTOR = [vectorToken: 'VECTOR', vector: StringType];
 
-export type MAX_DIST = ['MAX_DIST', maxDistance: number];
+export type MAX_DIST = [maxDistToken: 'MAX_DIST', maxDistance: number];
 
-export type TOPN = ['TOPN', topN: number];
+export type TOPN = [topNToken: 'TOPN', topN: number];
 
 export type AGGREGATION = [
-    'AGGREGATION',
+    aggregationToken: 'AGGREGATION',
     aggregationType:
-        | 'MAX'
-        | 'MIN'
-        | 'AVG'
-        | 'SUM'
-        | 'FIRST'
-        | 'LAST'
-        | 'RANGE'
-        | 'COUNT'
-        | 'STD.P'
-        | 'STD.S'
-        | 'VAR.P'
-        | 'VAR.S',
+    | 'MAX'
+    | 'MIN'
+    | 'AVG'
+    | 'SUM'
+    | 'FIRST'
+    | 'LAST'
+    | 'RANGE'
+    | 'COUNT'
+    | 'STD.P'
+    | 'STD.S'
+    | 'VAR.P'
+    | 'VAR.S',
     timeBucket: number,
 ];
 
-export type FILTER = ['FILTER', filter: StringType, ...filters: StringType[]];
+export type FILTER = [filterToken: 'FILTER', filter: StringType, ...filters: StringType[]];
 
-export type WITHLABELS = ['WITHLABELS'];
+export type WITHLABELS = [withlabelsToken: 'WITHLABELS'];
 
-export type VERSION = ['VER' | 'ABS', version: number];
-export type EXPIRY = ['EX' | 'EXAT' | 'PX' | 'PXAT', time: number];
-export type LOCK = ['NX' | 'XX'];
-export type SORT = ['ASC' | 'DESC'];
+export type VERSION = [versionToken: 'VER' | 'ABS', version: number];
+export type EXPIRY = [expiryToken: 'EX' | 'EXAT' | 'PX' | 'PXAT', time: number];
+export type LOCK = [lockToken: 'NX' | 'XX'];
+export type SORT = [sortToken: 'ASC' | 'DESC'];
